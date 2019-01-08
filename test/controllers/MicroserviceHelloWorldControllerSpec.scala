@@ -1,4 +1,4 @@
-package uk.gov.hmrc.digitalcommsdynamicstub.controllers
+package controllers
 
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

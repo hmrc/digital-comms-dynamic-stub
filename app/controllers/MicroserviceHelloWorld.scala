@@ -1,10 +1,8 @@
-package uk.gov.hmrc.digitalcommsdynamicstub.controllers
+package controllers
 
 import javax.inject.Singleton
-
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import play.api.mvc._
+import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
 import scala.concurrent.Future
 
