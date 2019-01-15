@@ -1,5 +1,6 @@
 # Add all the application routes to the app.routes file
-->         /digital-comms-dynamic-stub              app.Routes
-->         /                          health.Routes
 
-GET        /admin/metrics             com.kenshoo.play.metrics.MetricsController.metrics
+->         /digital-comms-dynamic-stub              app.Routes
+->         /                                        health.Routes
+
+GET        /admin/metrics                           com.kenshoo.play.metrics.MetricsController.metrics

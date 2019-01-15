@@ -25,7 +25,8 @@ val appName = "digital-comms-dynamic-stub"
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.6.0"
+  "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.6.0",
+  "uk.gov.hmrc"             %% "play-reactivemongo"       % "6.2.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
