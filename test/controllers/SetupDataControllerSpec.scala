@@ -17,13 +17,13 @@
 package controllers
 
 import base.BaseSpec
-import mocks.MockDataRepository
+import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.mvc.Http.Status
 
-class SetupDataControllerSpec extends BaseSpec with MockDataRepository {
+class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
   object TestSetupDataController extends SetupDataController(mockDataRepository)
 

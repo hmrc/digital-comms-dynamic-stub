@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DynamicStubDataRepository extends MongoDbConnection {
 
-  private lazy val repository: DynamicStubRepository = new DynamicStubRepository()
+  private[repositories] lazy val repository: DynamicStubRepository = new DynamicStubRepository()
 
   def find(query: (String, JsValueWrapper)*)(implicit ec: ExecutionContext): Future[List[DynamicDataModel]] =
     repository.find(query:_*)

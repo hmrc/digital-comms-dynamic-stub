@@ -26,7 +26,7 @@ import repositories.DynamicStubDataRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockDataRepository extends BaseSpec with MockFactory {
+trait MockDynamicDataRepository extends BaseSpec with MockFactory {
 
   val successWriteResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
   val errorWriteResult = DefaultWriteResult(ok = false, n = 1, writeErrors = Seq(WriteError(1,1,"Error")), None, None, None)
