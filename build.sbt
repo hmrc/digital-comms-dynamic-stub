@@ -25,15 +25,17 @@ val appName = "digital-comms-dynamic-stub"
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.6.0",
+  "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.7.0",
   "uk.gov.hmrc"             %% "play-reactivemongo"       % "6.2.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "org.scalatest"           %% "scalatest"                % "3.0.5"                 % scope,
-  "com.typesafe.play"       %% "play-test"                % PlayVersion.current     % scope,
-  "org.pegdown"             %  "pegdown"                  % "1.6.0"                 % scope,
-  "org.scalatestplus.play"  %% "scalatestplus-play"       % "2.0.1"                 % scope
+  "uk.gov.hmrc"             %% "hmrctest"                    % "3.3.0"                 % scope,
+  "org.scalatest"           %% "scalatest"                   % "3.0.5"                 % scope,
+  "com.typesafe.play"       %% "play-test"                   % PlayVersion.current     % scope,
+  "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
+  "org.scalatestplus.play"  %% "scalatestplus-play"          % "2.0.1"                 % scope,
+  "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {

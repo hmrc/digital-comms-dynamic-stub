@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.http.Status
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.libs.json.{JsValue, Json, OFormat}
 
-class HelloWorldControllerSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
+case class DynamicDataModel(_id: String,
+                            method: String,
+                            status: Int,
+                            response: Option[JsValue])
 
-  val fakeRequest = FakeRequest("GET", "/")
-
-  "GET /" should {
-    "return 200" in {
-      val controller = new HelloWorldController()
-      val result = controller.hello()(fakeRequest)
-      status(result) shouldBe Status.OK
-    }
-  }
+object DynamicDataModel {
+  implicit val formats: OFormat[DynamicDataModel] = Json.format[DynamicDataModel]
 }

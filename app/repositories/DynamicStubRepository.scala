@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package repositories
 
-import javax.inject.Singleton
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import models.DynamicDataModel
+import play.api.libs.json.Format
+import play.api.libs.json.Writes.StringWrites
+import play.api.libs.json.Reads.StringReads
+import reactivemongo.api.DB
+import uk.gov.hmrc.mongo.ReactiveRepository
 
-import scala.concurrent.Future
-
-@Singleton()
-class HelloWorldController extends BaseController {
-
-  def hello(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok("Hello world"))
-  }
-}
+class DynamicStubRepository(implicit mongo: () => DB,
+                            formats: Format[DynamicDataModel],
+                            manifest: Manifest[DynamicDataModel])
+  extends ReactiveRepository[DynamicDataModel, String]("data", mongo, formats, Format(StringReads, StringWrites))
