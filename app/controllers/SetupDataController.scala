@@ -43,13 +43,6 @@ class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
       case _ => InternalServerError("Failed to add data to Stub.")
   }
 
-  val removeData: String => Action[AnyContent] = url => Action.async { implicit request =>
-    dataRepository.removeById(url).map {
-      case result if result.ok => Ok("Success")
-      case _ => InternalServerError("Could not delete data")
-    }
-  }
-
   val removeAll: Action[AnyContent] = Action.async { implicit request =>
     dataRepository.removeAll().map {
       case result if result.ok => Ok("Removed All Stubbed Data")

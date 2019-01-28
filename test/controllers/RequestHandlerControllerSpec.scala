@@ -16,7 +16,6 @@
 
 package controllers
 
-import base.BaseSpec
 import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
@@ -24,7 +23,7 @@ import play.mvc.Http.Status
 
 class RequestHandlerControllerSpec extends MockDynamicDataRepository {
 
-  object TestRequestHandlerController extends RequestHandlerController(mockDataRepository)
+  lazy val controller = new RequestHandlerController(mockDataRepository)
 
   lazy val successModel = DynamicDataModel(
     _id = "/test",
@@ -43,14 +42,14 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
   "The getRequestHandler method" should {
 
     "return the status code specified in the model" in {
-      lazy val result = TestRequestHandlerController.getRequestHandler("/test")(request)
+      lazy val result = controller.getRequestHandler("/test")(request)
       mockFind(List(successModel)).twice()
 
       status(result) shouldBe Status.OK
     }
 
     "return the status and body" in {
-      lazy val result = TestRequestHandlerController.getRequestHandler("/test")(request)
+      lazy val result = controller.getRequestHandler("/test")(request)
       mockFind(List(successWithBodyModel)).twice()
 
       status(result) shouldBe Status.OK
@@ -58,7 +57,7 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
     }
 
     "return a 404 status when the endpoint cannot be found" in {
-      lazy val result = TestRequestHandlerController.getRequestHandler("/test")(request)
+      lazy val result = controller.getRequestHandler("/test")(request)
       mockFind(List()).twice()
 
       status(result) shouldBe Status.NOT_FOUND
@@ -68,21 +67,21 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
   "The postRequestHandler method" should {
 
     "return a response status when there is no stubbed response body for an incoming POST request" in {
-      lazy val result = TestRequestHandlerController.postRequestHandler("/test")(request)
+      lazy val result = controller.postRequestHandler("/test")(request)
       mockFind(List(successModel))
 
       status(result) shouldBe Status.OK
     }
 
     "return the corresponding response of an incoming POST request" in {
-      lazy val result = TestRequestHandlerController.postRequestHandler("/test")(request)
+      lazy val result = controller.postRequestHandler("/test")(request)
       mockFind(List(successWithBodyModel))
 
       await(bodyOf(result)) shouldBe s"${successWithBodyModel.response.get}"
     }
 
     "return a 404 status if the endpoint specified in the POST request can't be found" in {
-      lazy val result = TestRequestHandlerController.postRequestHandler("/test")(request)
+      lazy val result = controller.postRequestHandler("/test")(request)
       mockFind(List())
 
       status(result) shouldBe Status.NOT_FOUND
@@ -97,7 +96,7 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
         "message" -> s"Could not find endpoint in Dynamic Stub matching the URI: url",
         "path" -> "url"
       )
-      lazy val result = TestRequestHandlerController.errorResponseBody("url")
+      lazy val result = controller.errorResponseBody("url")
 
       result shouldBe body
     }

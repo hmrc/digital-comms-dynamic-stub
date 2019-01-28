@@ -29,7 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 trait MockDynamicDataRepository extends BaseSpec with MockFactory {
 
   val successWriteResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
-  val errorWriteResult = DefaultWriteResult(ok = false, n = 1, writeErrors = Seq(WriteError(1,1,"Error")), None, None, None)
+  val errorWriteResult =
+    DefaultWriteResult(ok = false, n = 1, writeErrors = Seq(WriteError(1,1,"Error")), None, None, None)
 
   lazy val mockDataRepository: DynamicStubDataRepository = mock[DynamicStubDataRepository]
 
@@ -50,7 +51,8 @@ trait MockDynamicDataRepository extends BaseSpec with MockFactory {
       .expects(*)
       .returning(response)
 
-  def mockFind(response: List[DynamicDataModel]): CallHandler2[(String, JsValueWrapper), ExecutionContext, Future[List[DynamicDataModel]]] =
+  def mockFind(response: List[DynamicDataModel]): CallHandler2[(String, JsValueWrapper),
+                                                               ExecutionContext, Future[List[DynamicDataModel]]] =
     (mockDataRepository.find(_: (String, JsValueWrapper))(_: ExecutionContext))
       .expects(*,*)
       .returning(response)

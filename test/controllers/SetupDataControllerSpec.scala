@@ -25,11 +25,11 @@ import play.mvc.Http.Status
 
 class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
-  object TestSetupDataController extends SetupDataController(mockDataRepository)
+  lazy val controller = new SetupDataController(mockDataRepository)
 
   "SetupDataController.addData" when {
 
-    "validateUrlMatch returns 'true'" should {
+    "the request method is 'GET' or 'POST'" should {
 
       val model: DynamicDataModel = DynamicDataModel(
         _id = "1234",
@@ -38,28 +38,24 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
         status = Status.OK
       )
 
-      "when validateResponseJson returns 'true'" should {
+      "return Status OK (200) if data successfully added to stub" in {
+        lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
+        lazy val result = controller.addData(request)
 
-        "return Status OK (200) if data successfully added to stub" in {
-          lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
-          lazy val result = TestSetupDataController.addData(request)
+        mockAddEntry(model)(successWriteResult)
+        status(result) shouldBe Status.OK
+      }
 
-          mockAddEntry(model)(successWriteResult)
-          status(result) shouldBe Status.OK
-        }
+      "return Status InternalServerError (500) if unable to add data to the stub" in {
+        lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
+        lazy val result = controller.addData(request)
 
-        "return Status InternalServerError (500) if unable to add data to the stub" in {
-          lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
-          lazy val result = TestSetupDataController.addData(request)
-
-          mockAddEntry(model)(errorWriteResult)
-          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-        }
-
+        mockAddEntry(model)(errorWriteResult)
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
     }
 
-    "not a GET request" should {
+    "the request method is not 'GET' or 'POST'" should {
 
       val model: DynamicDataModel = DynamicDataModel(
         _id = "1234",
@@ -69,31 +65,10 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
       "return Status BadRequest (400)" in {
         lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
-        lazy val result = TestSetupDataController.addData(request)
+        lazy val result = controller.addData(request)
 
         status(result) shouldBe Status.BAD_REQUEST
       }
-    }
-  }
-
-  "SetupDataController.removeData" should {
-
-    "return Status OK (200) on successful removal of data from the stub" in {
-      lazy val request = FakeRequest()
-      lazy val result = TestSetupDataController.removeData("someUrl")(request)
-
-      mockRemoveById("someUrl")(successWriteResult)
-
-      status(result) shouldBe Status.OK
-    }
-
-    "return Status InternalServerError (500) on unsuccessful removal of data from the stub" in {
-      lazy val request = FakeRequest()
-      lazy val result = TestSetupDataController.removeData("someUrl")(request)
-
-      mockRemoveById("someUrl")(errorWriteResult)
-
-      status(result) shouldBe Status.INTERNAL_SERVER_ERROR
     }
   }
 
@@ -101,7 +76,7 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
     "return Status OK (200) on successful removal of all stubbed data" in {
       lazy val request = FakeRequest()
-      lazy val result = TestSetupDataController.removeAll()(request)
+      lazy val result = controller.removeAll()(request)
 
       mockRemoveAll()(successWriteResult)
 
@@ -110,7 +85,7 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
     "return Status InternalServerError (500) on successful removal of all stubbed data" in {
       lazy val request = FakeRequest()
-      lazy val result = TestSetupDataController.removeAll()(request)
+      lazy val result = controller.removeAll()(request)
 
       mockRemoveAll()(errorWriteResult)
 

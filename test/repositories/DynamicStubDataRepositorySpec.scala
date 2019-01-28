@@ -34,6 +34,7 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
   }
 
   val successWriteResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
+  val successDeletionResult = DefaultWriteResult(ok = true, n = 0, writeErrors = Seq(), None, None, None)
   val dynamicDataModel = DynamicDataModel("id1", "get", 1, None)
   val dynamicDataJson: JsValue = Json.toJson(dynamicDataModel)
 
@@ -57,7 +58,6 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
     }
 
     "remove all documents from the collection" in {
-      val successDeletionResult = DefaultWriteResult(ok = true, n = 0, writeErrors = Seq(), None, None, None)
       val result = await(mockDataRepo.removeAll())
       result shouldBe successDeletionResult
     }
