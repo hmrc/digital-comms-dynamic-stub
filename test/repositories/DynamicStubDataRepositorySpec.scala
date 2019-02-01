@@ -27,14 +27,13 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
 
   val mockFormat: Format[DynamicDataModel] = mock[Format[DynamicDataModel]]
   val mockRepo: DynamicStubRepository =
-    new DynamicStubRepository()(() => mongo(), mockFormat, mock[Manifest[DynamicDataModel]])
+    new DynamicStubRepository()(() => mongo(), mockFormat)
 
   lazy val mockDataRepo: DynamicStubDataRepository = new DynamicStubDataRepository {
     override lazy val repository: DynamicStubRepository = mockRepo
   }
 
-  val successWriteResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
-  val successDeletionResult = DefaultWriteResult(ok = true, n = 0, writeErrors = Seq(), None, None, None)
+  val successResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
   val dynamicDataModel = DynamicDataModel("id1", "get", 1, None)
   val dynamicDataJson: JsValue = Json.toJson(dynamicDataModel)
 
@@ -43,7 +42,7 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
     "insert a given document" in {
       (mockFormat.writes(_: DynamicDataModel)).expects(dynamicDataModel).returning(Json.toJson(dynamicDataModel))
       val result = await(mockDataRepo.insert(dynamicDataModel))
-      result shouldBe successWriteResult
+      result shouldBe successResult
     }
 
     "find matching documents given a query" in {
@@ -52,14 +51,14 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
       result shouldBe List(dynamicDataModel)
     }
 
-    "remove a document with a specified ID" in {
-      val result = await(mockDataRepo.removeById("id1"))
-      result shouldBe successWriteResult
-    }
-
     "remove all documents from the collection" in {
       val result = await(mockDataRepo.removeAll())
-      result shouldBe successDeletionResult
+      result shouldBe successResult
+    }
+
+    "contain a DynamicStubRepository" in {
+      val dynamicStubRepo = new DynamicStubDataRepository()
+      dynamicStubRepo.repository.getClass shouldBe mockRepo.getClass
     }
   }
 }

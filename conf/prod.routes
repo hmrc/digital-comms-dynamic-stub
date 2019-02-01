@@ -1,6 +1,7 @@
 # Add all the application routes to the app.routes file
 
 ->         /setup                   setup.Routes
+->         /email                   email.Routes
 ->         /                        health.Routes
 ->         /                        stub.Routes
 

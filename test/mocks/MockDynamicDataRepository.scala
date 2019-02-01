@@ -40,12 +40,6 @@ trait MockDynamicDataRepository extends BaseSpec with MockFactory {
       .expects(document, *)
       .returning(response)
 
-  def mockRemoveById(url: String)
-                    (response: WriteResult): CallHandler2[String, ExecutionContext, Future[WriteResult]] =
-    (mockDataRepository.removeById(_: String)(_: ExecutionContext))
-      .expects(url, *)
-      .returning(response)
-
   def mockRemoveAll()(response: WriteResult): CallHandler1[ExecutionContext, Future[WriteResult]] =
     (mockDataRepository.removeAll()(_: ExecutionContext))
       .expects(*)

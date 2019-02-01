@@ -16,13 +16,19 @@
 
 package repositories
 
-import models.DynamicDataModel
-import play.api.libs.json.Format
-import play.api.libs.json.Writes.StringWrites
-import play.api.libs.json.Reads.StringReads
+import play.api.libs.json.{Format, JsResult, JsSuccess, JsValue}
 import reactivemongo.api.DB
 import uk.gov.hmrc.mongo.ReactiveRepository
 
-class DynamicStubRepository(implicit mongo: () => DB,
-                            formats: Format[DynamicDataModel])
-  extends ReactiveRepository[DynamicDataModel, String]("data", mongo, formats, Format(StringReads, StringWrites))
+class EmailRepository(implicit mongo: () => DB)extends ReactiveRepository[JsValue, String](
+    collectionName = "email",
+    mongo          = mongo,
+    idFormat       = implicitly[Format[String]],
+    domainFormat   = EmailRepository.rawFormat)
+
+object EmailRepository {
+  val rawFormat: Format[JsValue] = new Format[JsValue] {
+    override def reads(json: JsValue): JsResult[JsValue] = JsSuccess(json)
+    override def writes(o: JsValue): JsValue = o
+  }
+}

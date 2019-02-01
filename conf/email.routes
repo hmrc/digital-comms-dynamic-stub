@@ -1,0 +1,4 @@
+POST        /insert                          @controllers.EmailController.insert
+DELETE      /remove                          @controllers.EmailController.remove
+GET         /count                           @controllers.EmailController.count
+
