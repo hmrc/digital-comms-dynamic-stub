@@ -16,13 +16,20 @@
 
 package repositories
 
-import models.DynamicDataModel
-import play.api.libs.json.Format
-import play.api.libs.json.Writes.StringWrites
-import play.api.libs.json.Reads.StringReads
-import reactivemongo.api.DB
-import uk.gov.hmrc.mongo.ReactiveRepository
+import base.BaseSpec
+import play.api.libs.json.{JsSuccess, Json}
+import uk.gov.hmrc.mongo.MongoSpecSupport
 
-class DynamicStubRepository(implicit mongo: () => DB,
-                            formats: Format[DynamicDataModel])
-  extends ReactiveRepository[DynamicDataModel, String]("data", mongo, formats, Format(StringReads, StringWrites))
+class SecureMessageRepositorySpec extends BaseSpec with MongoSpecSupport {
+
+  "SecureMessageRepository" should {
+
+    val validJson = Json.obj("test " -> "test")
+
+    "format valid json to a JsSuccess" in {
+      val result = EmailRepository.rawFormat.reads(validJson)
+
+      result shouldBe JsSuccess(validJson)
+    }
+  }
+}

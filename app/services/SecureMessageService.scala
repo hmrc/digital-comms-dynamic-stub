@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package repositories
+package services
 
-import models.DynamicDataModel
-import play.api.libs.json.Json.JsValueWrapper
+import play.api.libs.json.JsValue
 import play.modules.reactivemongo.MongoDbConnection
-import reactivemongo.api.commands.WriteResult
+import repositories.SecureMessageRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DynamicStubDataRepository extends MongoDbConnection {
+class SecureMessageService extends MongoDbConnection {
 
-  private[repositories] lazy val repository: DynamicStubRepository = new DynamicStubRepository()
+  private[services] lazy val repository: SecureMessageRepository = new SecureMessageRepository()
 
-  def find(query: (String, JsValueWrapper)*)(implicit ec: ExecutionContext): Future[List[DynamicDataModel]] =
-    repository.find(query:_*)
+  def insert(data: JsValue)(implicit ec: ExecutionContext): Future[Boolean] =
+    repository.insert(data).map(_.ok)
 
-  def insert(data: DynamicDataModel)(implicit ec: ExecutionContext): Future[WriteResult] = repository.insert(data)
+  def count()(implicit ec: ExecutionContext): Future[Int] =
+    repository.count
 
-  def removeAll()(implicit ec: ExecutionContext): Future[WriteResult] = repository.removeAll()
-
+  def removeAll()(implicit ec: ExecutionContext): Future[Boolean] =
+    repository.removeAll().map(_.ok)
 }
