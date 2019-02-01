@@ -17,18 +17,18 @@
 package controllers
 
 import base.BaseSpec
-import mocks.MockEmailService
+import mocks.MockSecureMessageService
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.mvc.Http.Status
 
 import scala.concurrent.Future
 
-class EmailControllerSpec extends BaseSpec with MockEmailService {
+class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService {
 
-  lazy val controller = new EmailController(mockEmailService)
+  lazy val controller = new SecureMessageController(mockSecureMessageService)
 
-  "EmailController.insert" when {
+  "SecureMessageController.insert" when {
 
     "the request body is valid json" should {
 
@@ -60,7 +60,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
     }
   }
 
-  "EmailController.remove" should {
+  "SecureMessageController.remove" should {
 
     "return Status OK (200) on successful removal of all stubbed data" in {
       lazy val result = controller.remove()(request)
@@ -79,7 +79,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
     }
   }
 
-  "EmailController.count" should {
+  "SecureMessageController.count" should {
 
     "return Status OK (200) on successful count of all stubbed data" in {
       lazy val result = controller.count()(request)

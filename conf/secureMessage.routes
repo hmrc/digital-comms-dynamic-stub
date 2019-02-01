@@ -1,0 +1,4 @@
+POST        /insert                          @controllers.SecureMessageController.insert
+DELETE      /remove                          @controllers.SecureMessageController.remove
+GET         /count                           @controllers.SecureMessageController.count
+

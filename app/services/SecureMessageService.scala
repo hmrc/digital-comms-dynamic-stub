@@ -18,13 +18,13 @@ package services
 
 import play.api.libs.json.JsValue
 import play.modules.reactivemongo.MongoDbConnection
-import repositories.EmailRepository
+import repositories.SecureMessageRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailService extends MongoDbConnection {
+class SecureMessageService extends MongoDbConnection {
 
-  private[services] lazy val repository: EmailRepository = new EmailRepository()
+  private[services] lazy val repository: SecureMessageRepository = new SecureMessageRepository()
 
   def insert(data: JsValue)(implicit ec: ExecutionContext): Future[Boolean] =
     repository.insert(data).map(_.ok)
