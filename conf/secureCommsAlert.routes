@@ -1,0 +1,3 @@
+#Secure Comms Alert endpoints
+
+GET /service/:service/registration-number/:regNumber/communications/:communicationId    @controllers.SecureCommsAlertController.handleGet(service, regNumber, communicationId)

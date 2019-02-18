@@ -3,6 +3,7 @@
 ->         /setup                   setup.Routes
 ->         /email                   email.Routes
 ->         /secure-message          secureMessage.Routes
+->         /secure-comms-alert      secureCommsAlert.Routes
 ->         /                        health.Routes
 ->         /                        stub.Routes
 
