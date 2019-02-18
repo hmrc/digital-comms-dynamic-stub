@@ -34,6 +34,14 @@ class EmailController @Inject()(emailService: EmailService)(implicit val ec: Exe
     case _ => Future.successful(BadRequest)
   }}
 
+  def insertWithResponse(): Action[AnyContent] = Action.async { implicit request => request.body match {
+    case body: AnyContentAsJson => emailService.insert(body.json) map {
+      case true  => Accepted
+      case false => InternalServerError
+    }
+    case _ => Future.successful(BadRequest)
+  }}
+
   def remove(): Action[AnyContent] = Action.async { implicit request =>
     emailService.removeAll() map {
       case true  => Ok

@@ -2,4 +2,4 @@ POST        /insert                          @controllers.EmailController.insert
 DELETE      /remove                          @controllers.EmailController.remove
 GET         /count                           @controllers.EmailController.count
 
-POST        /                                @controllers.EmailController.insert
+POST        /                                @controllers.EmailController.insertWithResponse
