@@ -25,14 +25,13 @@ import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SecureCommsAlertController @Inject()(implicit ec: ExecutionContext) extends BaseController {
-  def handleGet(service: String, regNumber: String, communicationId: String): Action[AnyContent] = Action { implicit request =>
+  def handleGet(service: String, regNumber: String, communicationId: String): Action[AnyContent] = Action.async { implicit request =>
 
-    val dateFormat = new SimpleDateFormat("yyyy-mm-dd")
-    val dateToReturn = dateFormat.format(DateTime.now())
+    val dateToReturn = DateTime.now().toString("yyyy-mm-dd")
 
     val returnData = SecureCommsDataModel(
       dateToReturn,
@@ -44,6 +43,8 @@ class SecureCommsAlertController @Inject()(implicit ec: ExecutionContext) extend
         "<p>FORMAT PREFERENCE|TEXT</p>"
     )
 
-    Ok(Json.toJson(returnData))
+    Future.successful(
+      Ok(Json.toJson(returnData))
+    )
   }
 }

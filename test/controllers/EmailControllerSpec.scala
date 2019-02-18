@@ -17,10 +17,11 @@
 package controllers
 
 import base.BaseSpec
+
 import mocks.MockEmailService
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.mvc.Http.Status
+import play.api.http.Status._
 
 import scala.concurrent.Future
 
@@ -40,7 +41,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
         lazy val result = controller.insert()(request)
 
         mockInsert(testJson)(Future.successful(true))
-        status(result) shouldBe Status.OK
+        status(result) shouldBe OK
       }
 
       "return Status InternalServerError (500) if unable to add data to the stub" in {
@@ -48,17 +49,51 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
         lazy val result = controller.insert()(request)
 
         mockInsert(testJson)(Future.successful(false))
-        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
       "return Status BadRequest (400) if request body is not json" in {
         lazy val request = FakeRequest().withTextBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
         lazy val result = controller.insert()(request)
 
-        status(result) shouldBe Status.BAD_REQUEST
+        status(result) shouldBe BAD_REQUEST
       }
     }
   }
+
+  "EmailController.insertWithResponse" when {
+
+    "the request body is valid json" should {
+
+      val testJson = Json.obj("test" -> "test")
+      val testInvalidJson = "invalid"
+
+      s"return Status ACCEPTED ($ACCEPTED) if data successfully added to stub" in {
+        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
+        lazy val result = controller.insertWithResponse()(request)
+
+        mockInsert(testJson)(Future.successful(true))
+        status(result) shouldBe ACCEPTED
+      }
+
+      s"return Status InternalServerError ($INTERNAL_SERVER_ERROR) if unable to add data to the stub" in {
+        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
+        lazy val result = controller.insertWithResponse()(request)
+
+        mockInsert(testJson)(Future.successful(false))
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+      s"return Status BadRequest ($BAD_REQUEST) if request body is not json" in {
+        lazy val request = FakeRequest().withTextBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
+        lazy val result = controller.insertWithResponse()(request)
+
+        status(result) shouldBe BAD_REQUEST
+      }
+    }
+  }
+
+
 
   "EmailController.remove" should {
 
@@ -67,7 +102,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
 
       mockRemoveAll()(Future.successful(true))
 
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
     }
 
     "return Status InternalServerError (500) on unsuccessful removal of all stubbed data" in {
@@ -75,7 +110,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
 
       mockRemoveAll()(Future.successful(false))
 
-      status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+      status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
 
@@ -86,7 +121,7 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
 
       mockCount()(Future.successful(1))
 
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
     }
   }
 }

@@ -34,6 +34,14 @@ class SecureMessageController @Inject()(secureMessageService: SecureMessageServi
     case _ => Future.successful(BadRequest)
   }}
 
+  def insertWithResponse(): Action[AnyContent] = Action.async { implicit request => request.body match {
+    case body: AnyContentAsJson => secureMessageService.insert(body.json) map {
+      case true  => Created
+      case false => InternalServerError
+    }
+    case _ => Future.successful(BadRequest)
+  }}
+
   def remove(): Action[AnyContent] = Action.async { implicit request =>
     secureMessageService.removeAll() map {
       case true  => Ok

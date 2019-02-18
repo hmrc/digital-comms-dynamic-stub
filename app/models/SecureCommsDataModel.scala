@@ -16,10 +16,10 @@
 
 package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OFormat}
 
 case class SecureCommsDataModel(processingDate: String, secureCommText: String)
 
 object SecureCommsDataModel {
-  implicit val reads: Reads[SecureCommsDataModel] = Json.reads[SecureCommsDataModel]
+  implicit val formats: OFormat[SecureCommsDataModel] = Json.format[SecureCommsDataModel]
 }

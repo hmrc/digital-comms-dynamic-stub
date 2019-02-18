@@ -5,6 +5,7 @@
 ->         /secure-message          secureMessage.Routes
 ->         /secure-comms-alert      secureCommsAlert.Routes
 ->         /hmrc/email              email.Routes
+->         /messages                secureMessage.Routes
 ->         /                        health.Routes
 ->         /                        stub.Routes
 
