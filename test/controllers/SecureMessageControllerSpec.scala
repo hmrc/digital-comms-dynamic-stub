@@ -35,12 +35,12 @@ class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService
       val testJson = Json.obj("test" -> "test")
       val testInvalidJson = "invalid"
 
-      "return Status OK (200) if data successfully added to stub" in {
+      s"return Status CREATED ($CREATED) if data successfully added to stub" in {
         lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.insert()(request)
 
         mockInsert(testJson)(Future.successful(true))
-        status(result) shouldBe OK
+        status(result) shouldBe CREATED
       }
 
       "return Status InternalServerError (500) if unable to add data to the stub" in {
@@ -57,34 +57,6 @@ class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService
 
         status(result) shouldBe BAD_REQUEST
       }
-    }
-  }
-
-  "SecureMessageController.insertWithResponse" should {
-    val testJson = Json.obj("test" -> "test")
-    val testInvalidJson = "invalid"
-
-    s"return Status CREATED ($CREATED) if data successfully added to stub" in {
-      lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
-      lazy val result = controller.insertWithResponse()(request)
-
-      mockInsert(testJson)(Future.successful(true))
-      status(result) shouldBe CREATED
-    }
-
-    s"return Status InternalServerError ($INTERNAL_SERVER_ERROR) if unable to add data to the stub" in {
-      lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
-      lazy val result = controller.insertWithResponse()(request)
-
-      mockInsert(testJson)(Future.successful(false))
-      status(result) shouldBe INTERNAL_SERVER_ERROR
-    }
-
-    s"return Status BadRequest ($BAD_REQUEST) if request body is not json" in {
-      lazy val request = FakeRequest().withTextBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
-      lazy val result = controller.insertWithResponse()(request)
-
-      status(result) shouldBe BAD_REQUEST
     }
   }
 

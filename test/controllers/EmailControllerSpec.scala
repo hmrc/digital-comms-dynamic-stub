@@ -36,12 +36,12 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
       val testJson = Json.obj("test" -> "test")
       val testInvalidJson = "invalid"
 
-      "return Status OK (200) if data successfully added to stub" in {
+      s"return Status ACCEPTED ($ACCEPTED) if data successfully added to stub" in {
         lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.insert()(request)
 
         mockInsert(testJson)(Future.successful(true))
-        status(result) shouldBe OK
+        status(result) shouldBe ACCEPTED
       }
 
       "return Status InternalServerError (500) if unable to add data to the stub" in {
@@ -60,40 +60,6 @@ class EmailControllerSpec extends BaseSpec with MockEmailService {
       }
     }
   }
-
-  "EmailController.insertWithResponse" when {
-
-    "the request body is valid json" should {
-
-      val testJson = Json.obj("test" -> "test")
-      val testInvalidJson = "invalid"
-
-      s"return Status ACCEPTED ($ACCEPTED) if data successfully added to stub" in {
-        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
-        lazy val result = controller.insertWithResponse()(request)
-
-        mockInsert(testJson)(Future.successful(true))
-        status(result) shouldBe ACCEPTED
-      }
-
-      s"return Status InternalServerError ($INTERNAL_SERVER_ERROR) if unable to add data to the stub" in {
-        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
-        lazy val result = controller.insertWithResponse()(request)
-
-        mockInsert(testJson)(Future.successful(false))
-        status(result) shouldBe INTERNAL_SERVER_ERROR
-      }
-
-      s"return Status BadRequest ($BAD_REQUEST) if request body is not json" in {
-        lazy val request = FakeRequest().withTextBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
-        lazy val result = controller.insertWithResponse()(request)
-
-        status(result) shouldBe BAD_REQUEST
-      }
-    }
-  }
-
-
 
   "EmailController.remove" should {
 
