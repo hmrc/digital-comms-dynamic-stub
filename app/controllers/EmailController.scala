@@ -28,7 +28,7 @@ class EmailController @Inject()(emailService: EmailService)(implicit val ec: Exe
 
   def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
     case body: AnyContentAsJson => emailService.insert(body.json) map {
-      case true  => Ok
+      case true  => Accepted
       case false => InternalServerError
     }
     case _ => Future.successful(BadRequest)

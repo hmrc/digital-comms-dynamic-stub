@@ -1,8 +1,8 @@
 # Add all the application routes to the app.routes file
 
 ->         /setup                   setup.Routes
-->         /email                   email.Routes
-->         /secure-message          secureMessage.Routes
+->         /hmrc/email              email.Routes
+->         /messages                secureMessage.Routes
 ->         /                        health.Routes
 ->         /                        stub.Routes
 
