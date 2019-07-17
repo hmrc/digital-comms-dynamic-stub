@@ -26,7 +26,7 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
   "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.13.0",
-  "uk.gov.hmrc"             %% "play-reactivemongo"       % "6.7.0"
+  "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.20.0-play-25"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
@@ -36,7 +36,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "2.0.1"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "3.1.0"                 % scope
+  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.15.0-play-25"                 % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
