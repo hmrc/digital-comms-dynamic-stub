@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,8 @@ val appName = "digital-comms-dynamic-stub"
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-play-25"        % "4.13.0",
-  "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.20.0-play-25"
+  "uk.gov.hmrc"             %% "bootstrap-play-25"          % "5.1.0",
+  "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.22.0-play-25"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
@@ -36,7 +36,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "2.0.1"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.15.0-play-25"                 % scope
+  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.16.0-play-25"        % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
