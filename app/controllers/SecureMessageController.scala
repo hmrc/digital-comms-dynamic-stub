@@ -28,7 +28,7 @@ class SecureMessageController @Inject()(secureMessageService: SecureMessageServi
 
   def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
     case body: AnyContentAsJson => secureMessageService.insert(body.json) map {
-      case true  => Created
+      case true  => Conflict
       case false => InternalServerError
     }
     case _ => Future.successful(BadRequest)
