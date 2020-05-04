@@ -19,12 +19,13 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.SecureMessageService
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class SecureMessageController @Inject()(secureMessageService: SecureMessageService)(implicit val ec: ExecutionContext) extends BaseController {
+class SecureMessageController @Inject()(secureMessageService: SecureMessageService)(implicit val ec: ExecutionContext,
+                                                                                    cc: ControllerComponents) extends BackendController(cc) {
 
   def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
     case body: AnyContentAsJson => secureMessageService.insert(body.json) map {

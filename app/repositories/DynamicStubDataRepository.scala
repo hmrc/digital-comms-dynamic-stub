@@ -16,14 +16,20 @@
 
 package repositories
 
+import javax.inject.Inject
 import models.DynamicDataModel
 import play.api.libs.json.Json.JsValueWrapper
-import play.modules.reactivemongo.MongoDbConnection
+import play.modules.reactivemongo.ReactiveMongoComponent
+import reactivemongo.api.DefaultDB
 import reactivemongo.api.commands.WriteResult
+import uk.gov.hmrc.mongo.MongoConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DynamicStubDataRepository extends MongoDbConnection {
+class DynamicStubDataRepository @Inject()(reactiveMongoComponent: ReactiveMongoComponent) {
+
+  lazy val mongoConnector: MongoConnector = reactiveMongoComponent.mongoConnector
+  implicit lazy val db: () => DefaultDB = mongoConnector.db
 
   private[repositories] lazy val repository: DynamicStubRepository = new DynamicStubRepository()
 

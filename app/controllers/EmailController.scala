@@ -19,12 +19,12 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.EmailService
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class EmailController @Inject()(emailService: EmailService)(implicit val ec: ExecutionContext) extends BaseController {
+class EmailController @Inject()(emailService: EmailService, cc: ControllerComponents)(implicit val ec: ExecutionContext) extends BackendController(cc) {
 
   def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
     case body: AnyContentAsJson => emailService.insert(body.json) map {
