@@ -17,16 +17,18 @@
 package services
 
 import base.BaseSpec
-import javax.inject.Inject
+import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.EmailRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
-class EmailServiceSpec @Inject()(reactiveMongoComponent: ReactiveMongoComponent) extends BaseSpec with MongoSpecSupport {
+class EmailServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
+
+  val mockMongo: ReactiveMongoComponent = mock[ReactiveMongoComponent]
 
   val mockEmailRepo: EmailRepository = new EmailRepository()(() => mongo())
-  lazy val mockEmailService: EmailService = new EmailService(reactiveMongoComponent) {
+  lazy val mockEmailService: EmailService = new EmailService(mockMongo) {
     override lazy val repository: EmailRepository = mockEmailRepo
   }
 
@@ -52,7 +54,7 @@ class EmailServiceSpec @Inject()(reactiveMongoComponent: ReactiveMongoComponent)
     }
 
     "contain an EmailRepository" in {
-      val service = new EmailService(reactiveMongoComponent)
+      val service = new EmailService(mockMongo)
       service.repository.getClass shouldBe mockEmailRepo.getClass
     }
   }

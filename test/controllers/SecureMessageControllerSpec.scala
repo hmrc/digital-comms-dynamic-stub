@@ -17,16 +17,18 @@
 package controllers
 
 import base.BaseSpec
-import javax.inject.Inject
 import mocks.MockSecureMessageService
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.http.Status._
 import play.api.mvc.ControllerComponents
+import play.api.test.Helpers.stubControllerComponents
 
 import scala.concurrent.Future
 
-class SecureMessageControllerSpec @Inject()(implicit val cc: ControllerComponents) extends BaseSpec with MockSecureMessageService {
+class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService {
+
+  implicit val cc: ControllerComponents = stubControllerComponents()
 
   lazy val controller = new SecureMessageController(mockSecureMessageService)
 

@@ -18,15 +18,18 @@ package services
 
 import base.BaseSpec
 import javax.inject.Inject
+import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.SecureMessageRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
-class SecureMessageServiceSpec @Inject()(reactiveMongoComponent: ReactiveMongoComponent) extends BaseSpec with MongoSpecSupport {
+class SecureMessageServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
+
+  val mockMongo: ReactiveMongoComponent = mock[ReactiveMongoComponent]
 
   val mockSecureMessageRepo: SecureMessageRepository = new SecureMessageRepository()(() => mongo())
-  lazy val mockSecureMessageService: SecureMessageService = new SecureMessageService(reactiveMongoComponent) {
+  lazy val mockSecureMessageService: SecureMessageService = new SecureMessageService(mockMongo) {
     override lazy val repository: SecureMessageRepository = mockSecureMessageRepo
   }
 
@@ -52,7 +55,7 @@ class SecureMessageServiceSpec @Inject()(reactiveMongoComponent: ReactiveMongoCo
     }
 
     "contain an SecureMessageRepository" in {
-      val service = new SecureMessageService(reactiveMongoComponent)
+      val service = new SecureMessageService(mockMongo)
       service.repository.getClass shouldBe mockSecureMessageRepo.getClass
     }
   }

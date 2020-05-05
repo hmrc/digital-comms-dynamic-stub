@@ -17,16 +17,18 @@
 package controllers
 
 import base.BaseSpec
-import javax.inject.Inject
 import mocks.MockEmailService
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.http.Status._
 import play.api.mvc.ControllerComponents
+import play.api.test.Helpers.stubControllerComponents
 
 import scala.concurrent.Future
 
-class EmailControllerSpec @Inject()(implicit val cc: ControllerComponents) extends BaseSpec with MockEmailService {
+class EmailControllerSpec extends BaseSpec with MockEmailService {
+
+  implicit val cc: ControllerComponents = stubControllerComponents()
 
   lazy val controller = new EmailController(mockEmailService)
 

@@ -18,7 +18,7 @@ package services
 
 import javax.inject.Inject
 import play.api.libs.json.JsValue
-import play.modules.reactivemongo.{MongoDbConnection, ReactiveMongoComponent}
+import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.DefaultDB
 import repositories.EmailRepository
 import uk.gov.hmrc.mongo.MongoConnector
