@@ -26,7 +26,7 @@ import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class SecureMessageServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
 
-  val mockMongo: ReactiveMongoComponent = mock[ReactiveMongoComponent]
+  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
 
   val mockSecureMessageRepo: SecureMessageRepository = new SecureMessageRepository()(() => mongo())
   lazy val mockSecureMessageService: SecureMessageService = new SecureMessageService(mockMongo) {

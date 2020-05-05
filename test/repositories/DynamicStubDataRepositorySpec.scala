@@ -26,7 +26,7 @@ import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with MongoSpecSupport {
 
-  val mockMongo: ReactiveMongoComponent = mock[ReactiveMongoComponent]
+  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
 
   val mockFormat: Format[DynamicDataModel] = mock[Format[DynamicDataModel]]
   val mockRepo: DynamicStubRepository =

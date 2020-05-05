@@ -25,7 +25,7 @@ import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class EmailServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
 
-  val mockMongo: ReactiveMongoComponent = mock[ReactiveMongoComponent]
+  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
 
   val mockEmailRepo: EmailRepository = new EmailRepository()(() => mongo())
   lazy val mockEmailService: EmailService = new EmailService(mockMongo) {
