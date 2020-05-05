@@ -24,7 +24,8 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton()
-class EmailController @Inject()(emailService: EmailService, cc: ControllerComponents)(implicit val ec: ExecutionContext) extends BackendController(cc) {
+class EmailController @Inject()(emailService: EmailService)(implicit val ec: ExecutionContext,
+                                                            cc: ControllerComponents) extends BackendController(cc) {
 
   def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
     case body: AnyContentAsJson => emailService.insert(body.json) map {

@@ -17,7 +17,9 @@
 package repositories
 
 import base.BaseSpec
+import javax.inject.Inject
 import play.api.libs.json.{JsSuccess, Json}
+import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class EmailRepositorySpec extends BaseSpec with MongoSpecSupport {

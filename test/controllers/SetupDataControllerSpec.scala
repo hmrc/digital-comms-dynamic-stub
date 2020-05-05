@@ -17,13 +17,15 @@
 package controllers
 
 import base.BaseSpec
+import javax.inject.Inject
 import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
 import play.mvc.Http.Status
 
-class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
+class SetupDataControllerSpec @Inject()(implicit val cc: ControllerComponents) extends BaseSpec with MockDynamicDataRepository {
 
   lazy val controller = new SetupDataController(mockDataRepository)
 

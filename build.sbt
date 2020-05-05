@@ -22,6 +22,8 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
+scalaVersion := "2.12.8"
+
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
@@ -38,6 +40,8 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
   "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.19.0-play-26"        % scope
 )
+
+//dependencyOverrides += "com.typesafe.akka" %% "akka-actor" % "2.5.23"
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   import scoverage.ScoverageKeys

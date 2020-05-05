@@ -17,14 +17,16 @@
 package services
 
 import base.BaseSpec
+import javax.inject.Inject
 import play.api.libs.json.{JsValue, Json}
+import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.EmailRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
-class EmailServiceSpec extends BaseSpec with MongoSpecSupport {
+class EmailServiceSpec @Inject()(reactiveMongoComponent: ReactiveMongoComponent) extends BaseSpec with MongoSpecSupport {
 
   val mockEmailRepo: EmailRepository = new EmailRepository()(() => mongo())
-  lazy val mockEmailService: EmailService = new EmailService {
+  lazy val mockEmailService: EmailService = new EmailService(reactiveMongoComponent) {
     override lazy val repository: EmailRepository = mockEmailRepo
   }
 
@@ -50,7 +52,7 @@ class EmailServiceSpec extends BaseSpec with MongoSpecSupport {
     }
 
     "contain an EmailRepository" in {
-      val service = new EmailService()
+      val service = new EmailService(reactiveMongoComponent)
       service.repository.getClass shouldBe mockEmailRepo.getClass
     }
   }

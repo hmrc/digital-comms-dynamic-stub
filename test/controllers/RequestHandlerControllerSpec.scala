@@ -16,15 +16,16 @@
 
 package controllers
 
+import javax.inject.Inject
 import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{ControllerComponents, Result}
 import play.mvc.Http.Status
 
 import scala.concurrent.Future
 
-class RequestHandlerControllerSpec extends MockDynamicDataRepository {
+class RequestHandlerControllerSpec @Inject()(implicit val cc: ControllerComponents) extends MockDynamicDataRepository {
 
   lazy val controller = new RequestHandlerController(mockDataRepository)
 
