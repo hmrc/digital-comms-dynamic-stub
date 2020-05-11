@@ -28,8 +28,6 @@ import scala.concurrent.Future
 
 class EmailControllerSpec extends BaseSpec with MockEmailService {
 
-  implicit val cc: ControllerComponents = stubControllerComponents()
-
   lazy val controller = new EmailController(mockEmailService)
 
   "EmailController.insert" when {

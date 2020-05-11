@@ -41,8 +41,6 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.19.0-play-26"        % scope
 )
 
-//dependencyOverrides += "com.typesafe.akka" %% "akka-actor" % "2.5.23"
-
 lazy val coverageSettings: Seq[Setting[_]] = {
   import scoverage.ScoverageKeys
 

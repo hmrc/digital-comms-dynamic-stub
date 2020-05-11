@@ -20,12 +20,16 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.Injector
+import play.api.mvc.ControllerComponents
 import play.api.test.FakeRequest
+import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext
 
 trait BaseSpec extends UnitSpec with GuiceOneAppPerSuite {
+
+  implicit val cc: ControllerComponents = stubControllerComponents()
 
   val request = FakeRequest()
   val injector: Injector = app.injector

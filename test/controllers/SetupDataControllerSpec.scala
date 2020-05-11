@@ -27,8 +27,6 @@ import play.mvc.Http.Status
 
 class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
-  implicit val cc: ControllerComponents = stubControllerComponents()
-
   lazy val controller = new SetupDataController(mockDataRepository)
 
   "SetupDataController.addData" when {

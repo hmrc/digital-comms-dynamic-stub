@@ -27,8 +27,6 @@ import scala.concurrent.Future
 
 class RequestHandlerControllerSpec extends MockDynamicDataRepository {
 
-  implicit val cc: ControllerComponents = stubControllerComponents()
-
   lazy val controller = new RequestHandlerController(mockDataRepository)
 
   lazy val successModel = DynamicDataModel(

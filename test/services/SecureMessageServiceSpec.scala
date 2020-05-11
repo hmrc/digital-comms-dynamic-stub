@@ -17,7 +17,6 @@
 package services
 
 import base.BaseSpec
-import javax.inject.Inject
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent

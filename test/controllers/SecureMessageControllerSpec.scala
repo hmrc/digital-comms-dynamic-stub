@@ -28,8 +28,6 @@ import scala.concurrent.Future
 
 class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService {
 
-  implicit val cc: ControllerComponents = stubControllerComponents()
-
   lazy val controller = new SecureMessageController(mockSecureMessageService)
 
   "SecureMessageController.insert" when {
