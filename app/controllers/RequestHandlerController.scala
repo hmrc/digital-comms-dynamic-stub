@@ -18,15 +18,16 @@ package controllers
 
 import javax.inject.Inject
 import models.DynamicDataModel
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
 import repositories.DynamicStubDataRepository
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContext
 
 class RequestHandlerController @Inject()(dataRepository: DynamicStubDataRepository)(
-                                        implicit ec: ExecutionContext) extends BaseController {
+                                        implicit ec: ExecutionContext,
+                                        cc: ControllerComponents) extends BackendController(cc) {
 
   def getRequestHandler(url: String): Action[AnyContent] = Action.async { implicit request =>
 

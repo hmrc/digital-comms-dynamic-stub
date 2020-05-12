@@ -20,16 +20,19 @@ import base.BaseSpec
 import models.DynamicDataModel
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{Format, JsValue, Json}
+import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.commands.DefaultWriteResult
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with MongoSpecSupport {
 
+  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
+
   val mockFormat: Format[DynamicDataModel] = mock[Format[DynamicDataModel]]
   val mockRepo: DynamicStubRepository =
     new DynamicStubRepository()(() => mongo(), mockFormat)
 
-  lazy val mockDataRepo: DynamicStubDataRepository = new DynamicStubDataRepository {
+  lazy val mockDataRepo: DynamicStubDataRepository = new DynamicStubDataRepository(mockMongo) {
     override lazy val repository: DynamicStubRepository = mockRepo
   }
 
@@ -57,7 +60,7 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
     }
 
     "contain a DynamicStubRepository" in {
-      val dynamicStubRepo = new DynamicStubDataRepository()
+      val dynamicStubRepo = new DynamicStubDataRepository(mockMongo)
       dynamicStubRepo.repository.getClass shouldBe mockRepo.getClass
     }
   }

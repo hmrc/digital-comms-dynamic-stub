@@ -16,13 +16,19 @@
 
 package services
 
+import javax.inject.Inject
 import play.api.libs.json.JsValue
-import play.modules.reactivemongo.MongoDbConnection
+import play.modules.reactivemongo.ReactiveMongoComponent
+import reactivemongo.api.DefaultDB
 import repositories.EmailRepository
+import uk.gov.hmrc.mongo.MongoConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmailService extends MongoDbConnection {
+class EmailService @Inject()(reactiveMongoComponent: ReactiveMongoComponent) {
+
+  lazy val mongoConnector: MongoConnector = reactiveMongoComponent.mongoConnector
+  implicit lazy val db: () => DefaultDB = mongoConnector.db
 
   private[services] lazy val repository: EmailRepository = new EmailRepository()
 

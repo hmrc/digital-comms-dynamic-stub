@@ -18,9 +18,9 @@ package controllers
 
 import base.BaseSpec
 import mocks.MockSecureMessageService
+import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.http.Status._
 
 import scala.concurrent.Future
 

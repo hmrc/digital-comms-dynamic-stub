@@ -19,14 +19,15 @@ package controllers
 import javax.inject.Inject
 import models.DynamicDataModel
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
 import repositories.DynamicStubDataRepository
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
-                                    implicit val ec: ExecutionContext) extends BaseController {
+                                    implicit val ec: ExecutionContext,
+                                    cc: ControllerComponents) extends BackendController(cc) {
 
   val addData: Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[DynamicDataModel](json => json.method.toUpperCase match {
