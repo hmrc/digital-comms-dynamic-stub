@@ -20,7 +20,7 @@ import javax.inject.Inject
 import models.DynamicDataModel
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
 import repositories.DynamicStubDataRepository
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.ExecutionContext

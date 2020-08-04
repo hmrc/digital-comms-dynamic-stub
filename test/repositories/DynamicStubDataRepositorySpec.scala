@@ -21,12 +21,11 @@ import models.DynamicDataModel
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{Format, JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.commands.DefaultWriteResult
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
 class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with MongoSpecSupport {
 
-  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
+  val mockMongo: ReactiveMongoComponent = injector.instanceOf[ReactiveMongoComponent]
 
   val mockFormat: Format[DynamicDataModel] = mock[Format[DynamicDataModel]]
   val mockRepo: DynamicStubRepository =
@@ -36,8 +35,7 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
     override lazy val repository: DynamicStubRepository = mockRepo
   }
 
-  val successResult = DefaultWriteResult(ok = true, n = 1, writeErrors = Seq(), None, None, None)
-  val dynamicDataModel = DynamicDataModel("id1", "get", 1, None)
+  val dynamicDataModel: DynamicDataModel = DynamicDataModel("id1", "get", 1, None)
   val dynamicDataJson: JsValue = Json.toJson(dynamicDataModel)
 
   "DynamicStubDataRepository" should {
@@ -45,7 +43,8 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
     "insert a given document" in {
       (mockFormat.writes(_: DynamicDataModel)).expects(dynamicDataModel).returning(Json.toJson(dynamicDataModel))
       val result = await(mockDataRepo.insert(dynamicDataModel))
-      result shouldBe successResult
+      result.ok shouldBe true
+      result.writeErrors shouldBe Seq()
     }
 
     "find matching documents given a query" in {
@@ -56,7 +55,8 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
 
     "remove all documents from the collection" in {
       val result = await(mockDataRepo.removeAll())
-      result shouldBe successResult
+      result.ok shouldBe true
+      result.writeErrors shouldBe Seq()
     }
 
     "contain a DynamicStubRepository" in {

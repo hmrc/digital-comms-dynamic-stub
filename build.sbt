@@ -22,13 +22,13 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.11"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-play-26"          % "1.7.0",
-  "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.26.0-play-26"
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"          % "2.24.0",
+  "uk.gov.hmrc"             %% "simple-reactivemongo"                % "7.26.0-play-26"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
@@ -38,7 +38,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "3.1.3"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.19.0-play-26"        % scope
+  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.21.0-play-26"        % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
@@ -70,7 +70,7 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 
 def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] = tests map {
   test => Group(test.name, Seq(test), SubProcess(
-    ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name, "-Dlogger.resource=-logback-test.xml"))
+    ForkOptions().withRunJVMOptions(Vector("-Dtest.name=" + test.name, "-Dlogger.resource=-logback-test.xml"))
   ))
 }
 

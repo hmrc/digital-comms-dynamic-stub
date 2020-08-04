@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.SecureMessageService
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,14 +35,14 @@ class SecureMessageController @Inject()(secureMessageService: SecureMessageServi
     case _ => Future.successful(BadRequest)
   }}
 
-  def remove(): Action[AnyContent] = Action.async { implicit request =>
+  def remove(): Action[AnyContent] = Action.async {
     secureMessageService.removeAll() map {
       case true  => Ok
       case false => InternalServerError
     }
   }
 
-  def count(): Action[AnyContent] = Action.async { implicit request =>
+  def count(): Action[AnyContent] = Action.async {
     secureMessageService.count.map(x => Ok(x.toString))
   }
 }
