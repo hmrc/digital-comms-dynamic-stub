@@ -21,7 +21,7 @@ import models.DynamicDataModel
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
 import repositories.DynamicStubDataRepository
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +44,7 @@ class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
       case _ => InternalServerError("Failed to add data to Stub.")
   }
 
-  val removeAll: Action[AnyContent] = Action.async { implicit request =>
+  val removeAll: Action[AnyContent] = Action.async {
     dataRepository.removeAll().map {
       case result if result.ok => Ok("Removed All Stubbed Data")
       case _ => InternalServerError("Unexpected Error Clearing MongoDB.")
