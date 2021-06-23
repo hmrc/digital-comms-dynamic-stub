@@ -17,18 +17,17 @@
 import play.core.PlayVersion
 import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
-import uk.gov.hmrc.SbtArtifactory
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.11"
+scalaVersion := "2.12.12"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"          % "2.24.0",
-  "uk.gov.hmrc"             %% "simple-reactivemongo"                % "7.26.0-play-26"
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"          % "5.4.0",
+  "uk.gov.hmrc"             %% "simple-reactivemongo"                % "8.0.0-play-26"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
@@ -75,7 +74,7 @@ def oneForkedJvmPerTest(tests: Seq[TestDefinition]): Seq[Group] = tests map {
 }
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(defaultSettings(): _*)
   .settings(publishingSettings: _*)
   .settings(coverageSettings: _*)
@@ -86,7 +85,6 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator,
-    resolvers ++= Seq(Resolver.jcenterRepo, Resolver.bintrayRepo("hmrc", "releases"))
   )
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
