@@ -84,7 +84,7 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    routesGenerator := InjectedRoutesGenerator,
+    routesGenerator := InjectedRoutesGenerator
   )
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
