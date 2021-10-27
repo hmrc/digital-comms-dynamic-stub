@@ -21,6 +21,7 @@ import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{status, defaultAwaitTimeout}
 import play.mvc.Http.Status
 
 class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {

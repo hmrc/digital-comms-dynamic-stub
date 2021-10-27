@@ -22,10 +22,11 @@ import play.api.libs.json.{JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.EmailRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 class EmailServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
 
-  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
+  val mockMongo: ReactiveMongoComponent = injector.instanceOf[ReactiveMongoComponent]
 
   val mockEmailRepo: EmailRepository = new EmailRepository()(() => mongo())
   lazy val mockEmailService: EmailService = new EmailService(mockMongo) {

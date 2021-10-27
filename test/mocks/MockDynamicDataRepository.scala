@@ -55,16 +55,16 @@ trait MockDynamicDataRepository extends BaseSpec with MockFactory {
                   (response: WriteResult): CallHandler2[DynamicDataModel, ExecutionContext, Future[WriteResult]] =
     (mockDataRepository.insert(_: DynamicDataModel)(_: ExecutionContext))
       .expects(document, *)
-      .returning(response)
+      .returning(Future.successful(response))
 
   def mockRemoveAll()(response: WriteResult): CallHandler1[ExecutionContext, Future[WriteResult]] =
     (mockDataRepository.removeAll()(_: ExecutionContext))
       .expects(*)
-      .returning(response)
+      .returning(Future.successful(response))
 
   def mockFind(response: List[DynamicDataModel]): CallHandler2[(String, JsValueWrapper),
                                                                ExecutionContext, Future[List[DynamicDataModel]]] =
     (mockDataRepository.find(_: (String, JsValueWrapper))(_: ExecutionContext))
       .expects(*,*)
-      .returning(response)
+      .returning(Future.successful(response))
 }
