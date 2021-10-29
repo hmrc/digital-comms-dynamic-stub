@@ -19,7 +19,8 @@ package repositories
 import base.BaseSpec
 import models.DynamicDataModel
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.{Format, JsValue, Json}
+import play.api.libs.json.{JsValue, Json}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.mongo.MongoSpecSupport
 
@@ -27,9 +28,8 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
 
   val mockMongo: ReactiveMongoComponent = injector.instanceOf[ReactiveMongoComponent]
 
-  val mockFormat: Format[DynamicDataModel] = mock[Format[DynamicDataModel]]
   val mockRepo: DynamicStubRepository =
-    new DynamicStubRepository()(() => mongo(), mockFormat)
+    new DynamicStubRepository()(() => mongo(), DynamicDataModel.formats)
 
   lazy val mockDataRepo: DynamicStubDataRepository = new DynamicStubDataRepository(mockMongo) {
     override lazy val repository: DynamicStubRepository = mockRepo
@@ -41,14 +41,12 @@ class DynamicStubDataRepositorySpec extends BaseSpec with MockFactory with Mongo
   "DynamicStubDataRepository" should {
 
     "insert a given document" in {
-      (mockFormat.writes(_: DynamicDataModel)).expects(dynamicDataModel).returning(Json.toJson(dynamicDataModel))
       val result = await(mockDataRepo.insert(dynamicDataModel))
       result.ok shouldBe true
       result.writeErrors shouldBe Seq()
     }
 
     "find matching documents given a query" in {
-      (mockFormat.reads(_: JsValue)).expects(dynamicDataJson).returning(dynamicDataJson.validate[DynamicDataModel])
       val result = await(mockDataRepo.find("_id" -> "id1"))
       result shouldBe List(dynamicDataModel)
     }

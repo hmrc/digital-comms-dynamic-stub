@@ -17,24 +17,22 @@
 package base
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import org.scalatest.{Matchers, WordSpecLike}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.Injector
-import play.api.mvc.ControllerComponents
+import play.api.mvc.{AnyContentAsEmpty, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.stubControllerComponents
-import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext
 
-trait BaseSpec extends UnitSpec with GuiceOneAppPerSuite {
+trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite {
 
   implicit val cc: ControllerComponents = stubControllerComponents()
 
-  val request = FakeRequest()
+  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val injector: Injector = app.injector
   implicit val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
 
   implicit val system: ActorSystem = ActorSystem("Sys")
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
 }

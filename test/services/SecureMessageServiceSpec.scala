@@ -22,6 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.SecureMessageRepository
 import uk.gov.hmrc.mongo.MongoSpecSupport
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 class SecureMessageServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
 

@@ -21,23 +21,22 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.12"
+scalaVersion := "2.12.14"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-26"          % "5.4.0",
-  "uk.gov.hmrc"             %% "simple-reactivemongo"                % "8.0.0-play-26"
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.16.0",
+  "uk.gov.hmrc"             %% "simple-reactivemongo"               % "8.0.0-play-28"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"             %% "hmrctest"                    % "3.9.0-play-26"         % scope,
-  "org.scalatest"           %% "scalatest"                   % "3.0.8"                 % scope,
+  "org.scalatest"           %% "scalatest"                   % "3.0.9"                 % scope,
   "com.typesafe.play"       %% "play-test"                   % PlayVersion.current     % scope,
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "3.1.3"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "4.21.0-play-26"        % scope
+  "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {

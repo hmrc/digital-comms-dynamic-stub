@@ -20,6 +20,7 @@ import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
 import play.mvc.Http.Status
 
 import scala.concurrent.Future
@@ -28,14 +29,14 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
 
   lazy val controller = new RequestHandlerController(mockDataRepository)
 
-  lazy val successModel = DynamicDataModel(
+  lazy val successModel: DynamicDataModel = DynamicDataModel(
     _id = "/test",
     method = "GET",
     status = Status.OK,
     response = None
   )
 
-  lazy val successWithBodyModel = DynamicDataModel(
+  lazy val successWithBodyModel: DynamicDataModel = DynamicDataModel(
     _id = "/test",
     method = "GET",
     status = Status.OK,
@@ -61,7 +62,7 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
       mockFind(List(successWithBodyModel)).twice()
 
       status(result) shouldBe Status.OK
-      await(bodyOf(result)) shouldBe s"${successWithBodyModel.response.get}"
+      contentAsJson(result) shouldBe successWithBodyModel.response.get
     }
 
     "return a 404 status when the endpoint cannot be found" in new TestRequestHandler("GET") {
@@ -82,7 +83,7 @@ class RequestHandlerControllerSpec extends MockDynamicDataRepository {
     "return the corresponding response of an incoming POST request" in new TestRequestHandler("POST") {
       mockFind(List(successWithBodyModel))
 
-      await(bodyOf(result)) shouldBe s"${successWithBodyModel.response.get}"
+      contentAsJson(result) shouldBe successWithBodyModel.response.get
     }
 
     "return a 404 status if the endpoint can't be found" in new TestRequestHandler("POST") {
