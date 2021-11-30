@@ -27,7 +27,7 @@ class SecureMessageRepositorySpec extends BaseSpec with MongoSpecSupport {
     val validJson = Json.obj("test " -> "test")
 
     "format valid json to a JsSuccess" in {
-      val result = EmailRepository.rawFormat.reads(validJson)
+      val result = SecureMessageRepository.rawFormat.reads(validJson)
 
       result shouldBe JsSuccess(validJson)
     }

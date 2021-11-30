@@ -34,7 +34,7 @@ class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
       case "GET" | "POST" => addStubDataToDB(json)
       case x => Future.successful(BadRequest(s"The method: $x is currently unsupported"))
     }).recover {
-      case ex => InternalServerError(s"Error Parsing Json DynamicDataModel: \n\t{$ex}")
+      case ex => InternalServerError("Unexpected exception returned when adding data to stub")
     }
   }
 
