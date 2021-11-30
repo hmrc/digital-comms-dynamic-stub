@@ -52,10 +52,10 @@ trait MockDynamicDataRepository extends BaseSpec with MockFactory {
   lazy val mockDataRepository: DynamicStubDataRepository = mock[DynamicStubDataRepository]
 
   def mockAddEntry(document: DynamicDataModel)
-                  (response: WriteResult): CallHandler2[DynamicDataModel, ExecutionContext, Future[WriteResult]] =
+                  (response: Future[WriteResult]): CallHandler2[DynamicDataModel, ExecutionContext, Future[WriteResult]] =
     (mockDataRepository.insert(_: DynamicDataModel)(_: ExecutionContext))
       .expects(document, *)
-      .returning(Future.successful(response))
+      .returning(response)
 
   def mockRemoveAll()(response: WriteResult): CallHandler1[ExecutionContext, Future[WriteResult]] =
     (mockDataRepository.removeAll()(_: ExecutionContext))

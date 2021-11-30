@@ -21,8 +21,9 @@ import mocks.MockDynamicDataRepository
 import models.DynamicDataModel
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, defaultAwaitTimeout}
+import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import play.mvc.Http.Status
+import scala.concurrent.Future
 
 class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
 
@@ -43,7 +44,7 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
         lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.addData(request)
 
-        mockAddEntry(model)(successWriteResult)
+        mockAddEntry(model)(Future.successful(successWriteResult))
         status(result) shouldBe Status.OK
       }
 
@@ -51,24 +52,40 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
         lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.addData(request)
 
-        mockAddEntry(model)(errorWriteResult)
+        mockAddEntry(model)(Future.successful(errorWriteResult))
         status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
     }
 
     "the request method is not 'GET' or 'POST'" should {
 
-      val model: DynamicDataModel = DynamicDataModel(
-        _id = "1234",
-        method = "BLOB",
-        response = Some(Json.parse("{}")),
-        status = Status.OK)
-
       "return Status BadRequest (400)" in {
+
+        val model: DynamicDataModel = DynamicDataModel(
+          _id = "1234",
+          method = "BLOB",
+          response = Some(Json.parse("{}")),
+          status = Status.OK)
+
         lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.addData(request)
 
         status(result) shouldBe Status.BAD_REQUEST
+      }
+
+      "return Status InternalServerError (500) if an unexpected exception is returned" in {
+
+        val model: DynamicDataModel = DynamicDataModel(
+          _id = "1234",
+          method = "POST",
+          response = Some(Json.parse("{}")),
+          status = Status.OK)
+
+        lazy val request = FakeRequest().withBody(Json.toJson(model)).withHeaders(("Content-Type", "application/json"))
+        lazy val result = controller.addData(request)
+
+        mockAddEntry(model)(Future.failed(new Exception("Unexpected exception")))
+        status(result) shouldBe Status.INTERNAL_SERVER_ERROR
       }
     }
   }
