@@ -34,7 +34,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.scalatest"           %% "scalatest"                   % "3.0.9"                 % scope,
   "com.typesafe.play"       %% "play-test"                   % PlayVersion.current     % scope,
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
-  "org.scalatestplus.play"  %% "scalatestplus-play"          % "3.1.3"                 % scope,
+  "org.scalatestplus.play"  %% "scalatestplus-play"          % "5.0.0"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
   "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope
 )
