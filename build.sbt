@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ scalaVersion := "2.12.14"
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.16.0",
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.18.0",
   "uk.gov.hmrc"             %% "simple-reactivemongo"               % "8.0.0-play-28"
 )
 
@@ -34,7 +34,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.scalatest"           %% "scalatest"                   % "3.0.9"                 % scope,
   "com.typesafe.play"       %% "play-test"                   % PlayVersion.current     % scope,
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
-  "org.scalatestplus.play"  %% "scalatestplus-play"          % "3.1.3"                 % scope,
+  "org.scalatestplus.play"  %% "scalatestplus-play"          % "5.0.0"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
   "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope
 )
@@ -60,7 +60,7 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 
   Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimum := 95,
+    ScoverageKeys.coverageMinimumStmtTotal := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
