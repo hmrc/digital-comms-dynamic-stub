@@ -21,12 +21,12 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.14"
+scalaVersion := "2.12.15"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.18.0",
+  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.20.0",
   "uk.gov.hmrc"             %% "simple-reactivemongo"               % "8.0.0-play-28"
 )
 
@@ -82,7 +82,6 @@ lazy val microservice = Project(appName, file("."))
     majorVersion := 0,
     libraryDependencies ++= appDependencies,
     retrieveManaged := true,
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
     routesGenerator := InjectedRoutesGenerator
   )
   .configs(IntegrationTest)
