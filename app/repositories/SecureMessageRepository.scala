@@ -17,14 +17,17 @@
 package repositories
 
 import play.api.libs.json.{Format, JsResult, JsSuccess, JsValue}
-import reactivemongo.api.DB
-import uk.gov.hmrc.mongo.ReactiveRepository
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import uk.gov.hmrc.mongo.MongoComponent
+import scala.concurrent.ExecutionContext
 
-class SecureMessageRepository(implicit mongo: () => DB)extends ReactiveRepository[JsValue, String](
-    collectionName = "secure-message",
-    mongo          = mongo,
-    idFormat       = implicitly[Format[String]],
-    domainFormat   = SecureMessageRepository.rawFormat)
+
+class SecureMessageRepository(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) extends PlayMongoRepository[JsValue](
+  mongoComponent = mongoComponent,
+  collectionName = "secure-message",
+  domainFormat   = SecureMessageRepository.rawFormat,
+  indexes        = Seq()
+)
 
 object SecureMessageRepository {
   val rawFormat: Format[JsValue] = new Format[JsValue] {

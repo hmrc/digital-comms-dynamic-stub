@@ -18,26 +18,24 @@ package repositories
 
 import javax.inject.Inject
 import models.DynamicDataModel
+import org.mongodb.scala.FindObservable
+import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.result.InsertOneResult
 import play.api.libs.json.Json.JsValueWrapper
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.DefaultDB
-import reactivemongo.api.commands.WriteResult
-import uk.gov.hmrc.mongo.MongoConnector
-
+import uk.gov.hmrc.mongo.MongoComponent
 import scala.concurrent.{ExecutionContext, Future}
 
-class DynamicStubDataRepository @Inject()(reactiveMongoComponent: ReactiveMongoComponent) {
 
-  lazy val mongoConnector: MongoConnector = reactiveMongoComponent.mongoConnector
-  implicit lazy val db: () => DefaultDB = mongoConnector.db
+class DynamicStubDataRepository @Inject()(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
 
-  private[repositories] lazy val repository: DynamicStubRepository = new DynamicStubRepository()
+  private[repositories] lazy val repository: DynamicStubRepository = new DynamicStubRepository(mongoComponent)
 
-  def find(query: (String, JsValueWrapper)*)(implicit ec: ExecutionContext): Future[List[DynamicDataModel]] =
-    repository.find(query:_*)
+  def find(query: (String, JsValueWrapper)*): Future[FindObservable[DynamicDataModel]] =
+    repository.collection.find(query.map(query => equal(query._1, query._2))).toFuture()
 
-  def insert(data: DynamicDataModel)(implicit ec: ExecutionContext): Future[WriteResult] = repository.insert(data)
+  def insert(data: DynamicDataModel)(implicit ec: ExecutionContext): Future[InsertOneResult] = repository.collection.insertOne(data).toFuture()
 
-  def removeAll()(implicit ec: ExecutionContext): Future[WriteResult] = repository.removeAll()
+  def removeAll()(implicit ec: ExecutionContext): Future[Void] =
+    repository.collection.drop().toFuture()
 
 }

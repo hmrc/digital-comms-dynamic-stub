@@ -18,11 +18,11 @@ package repositories
 
 import models.DynamicDataModel
 import play.api.libs.json.Format
-import play.api.libs.json.Writes.StringWrites
-import play.api.libs.json.Reads.StringReads
-import reactivemongo.api.DB
-import uk.gov.hmrc.mongo.ReactiveRepository
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import scala.concurrent.ExecutionContext
 
-class DynamicStubRepository(implicit mongo: () => DB,
+
+class DynamicStubRepository(mongo: MongoComponent)(implicit ec: ExecutionContext,
                             formats: Format[DynamicDataModel])
-  extends ReactiveRepository[DynamicDataModel, String]("data", mongo, formats, Format(StringReads, StringWrites))
+  extends PlayMongoRepository[DynamicDataModel](mongo, "data", formats, Seq())

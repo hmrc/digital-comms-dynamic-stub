@@ -40,13 +40,13 @@ class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
 
   private def addStubDataToDB(json: DynamicDataModel): Future[Result] =
     dataRepository.insert(json).map {
-      case result if result.ok => Ok(s"The following JSON was added to the stub: \n\n${Json.toJson(json)}")
+      case result if result.wasAcknowledged() => Ok(s"The following JSON was added to the stub: \n\n${Json.toJson(json)}")
       case _ => InternalServerError("Failed to add data to Stub.")
   }
 
   val removeAll: Action[AnyContent] = Action.async {
     dataRepository.removeAll().map {
-      case result if result.ok => Ok("Removed All Stubbed Data")
+      case result if result => Ok("Removed All Stubbed Data")
       case _ => InternalServerError("Unexpected Error Clearing MongoDB.")
     }
   }

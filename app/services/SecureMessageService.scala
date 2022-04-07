@@ -16,28 +16,24 @@
 
 package services
 
+import org.mongodb.scala.result.InsertOneResult
 import javax.inject.Inject
 import play.api.libs.json.JsValue
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.DefaultDB
 import repositories.SecureMessageRepository
-import uk.gov.hmrc.mongo.MongoConnector
-
+import uk.gov.hmrc.mongo.MongoComponent
 import scala.concurrent.{ExecutionContext, Future}
 
-class SecureMessageService @Inject()(reactiveMongoComponent: ReactiveMongoComponent) {
 
-  lazy val mongoConnector: MongoConnector = reactiveMongoComponent.mongoConnector
-  implicit lazy val db: () => DefaultDB = mongoConnector.db
+class SecureMessageService @Inject()(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
 
-  private[services] lazy val repository: SecureMessageRepository = new SecureMessageRepository()
+  private[services] lazy val repository: SecureMessageRepository = new SecureMessageRepository(mongoComponent)
 
-  def insert(data: JsValue)(implicit ec: ExecutionContext): Future[Boolean] =
-    repository.insert(data).map(_.ok)
+  def insert(data: JsValue)(implicit ec: ExecutionContext): Future[InsertOneResult] =
+    repository.collection.insertOne(data).toFuture()
 
-  def count()(implicit ec: ExecutionContext): Future[Int] =
-    repository.count
+  def count()(implicit ec: ExecutionContext): Future[Long] =
+    repository.collection.countDocuments().toFuture()
 
-  def removeAll()(implicit ec: ExecutionContext): Future[Boolean] =
-    repository.removeAll().map(_.ok)
+  def removeAll()(implicit ec: ExecutionContext): Future[Void] =
+    repository.collection.drop().toFuture()
 }

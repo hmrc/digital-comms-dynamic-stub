@@ -17,14 +17,17 @@
 package repositories
 
 import play.api.libs.json.{Format, JsResult, JsSuccess, JsValue}
-import reactivemongo.api.DB
-import uk.gov.hmrc.mongo.ReactiveRepository
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import scala.concurrent.ExecutionContext
 
-class EmailRepository(implicit mongo: () => DB)extends ReactiveRepository[JsValue, String](
-    collectionName = "email",
-    mongo          = mongo,
-    idFormat       = implicitly[Format[String]],
-    domainFormat   = EmailRepository.rawFormat)
+
+class EmailRepository(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) extends PlayMongoRepository[JsValue](
+  mongoComponent = mongoComponent,
+  collectionName = "email",
+  domainFormat   = EmailRepository.rawFormat,
+  indexes        = Seq()
+)
 
 object EmailRepository {
   val rawFormat: Format[JsValue] = new Format[JsValue] {

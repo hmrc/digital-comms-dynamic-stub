@@ -27,7 +27,7 @@ lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
   "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.20.0",
-  "uk.gov.hmrc"             %% "simple-reactivemongo"               % "8.0.0-play-28"
+  "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"                 % "0.62.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
@@ -36,7 +36,8 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "5.0.0"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope
+  "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope,
+  "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"     % "0.62.0"                % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
@@ -93,3 +94,11 @@ lazy val microservice = Project(appName, file("."))
     testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
     parallelExecution in IntegrationTest := false
   )
+
+
+inThisBuild(
+  List(
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
