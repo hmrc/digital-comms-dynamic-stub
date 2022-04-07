@@ -17,7 +17,12 @@
 package base
 
 import akka.actor.ActorSystem
-import org.scalatest.{Matchers, WordSpecLike}
+import com.mongodb.client.result.{DeleteResult, InsertOneResult}
+import models.{EmailRequestModel, ExternalRefModel, NameModel, RecipientModel, SecureCommsRequestModel, TaxIdentifierModel}
+import org.mongodb.scala.bson.BsonObjectId
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.Injector
 import play.api.mvc.{AnyContentAsEmpty, ControllerComponents}
@@ -26,7 +31,7 @@ import play.api.test.Helpers.stubControllerComponents
 
 import scala.concurrent.ExecutionContext
 
-trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite {
+trait BaseSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
   implicit val cc: ControllerComponents = stubControllerComponents()
 
@@ -35,4 +40,20 @@ trait BaseSpec extends WordSpecLike with Matchers with GuiceOneAppPerSuite {
   implicit val ec: ExecutionContext = injector.instanceOf[ExecutionContext]
 
   implicit val system: ActorSystem = ActorSystem("Sys")
+
+  val successWriteResult: InsertOneResult = InsertOneResult.acknowledged(BsonObjectId())
+  val errorWriteResult: InsertOneResult = InsertOneResult.unacknowledged()
+  val successDeleteResult: DeleteResult = DeleteResult.acknowledged(1)
+  val errorDeleteResult: DeleteResult = DeleteResult.unacknowledged()
+
+  val secureCommsModel: SecureCommsRequestModel = SecureCommsRequestModel(
+    ExternalRefModel("anId", "source"),
+    RecipientModel(TaxIdentifierModel("AA", "06"), NameModel("first", Some("middle"), Some("last")),
+      "dragon@born.tam"),
+    "testMessageType",
+    "testSubject",
+    "testContent"
+  )
+
+  val emailModel: EmailRequestModel = EmailRequestModel(Seq("email@test.com"), "ABCD", Map(), force = false)
 }

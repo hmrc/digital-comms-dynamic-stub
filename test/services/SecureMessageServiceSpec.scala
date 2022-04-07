@@ -17,46 +17,42 @@
 package services
 
 import base.BaseSpec
-import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.{JsValue, Json}
-import play.modules.reactivemongo.ReactiveMongoComponent
+import models.SecureCommsServiceRequestModel.format
+import models._
 import repositories.SecureMessageRepository
-import uk.gov.hmrc.mongo.MongoSpecSupport
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import uk.gov.hmrc.mongo.test.{DefaultPlayMongoRepositorySupport}
 
-class SecureMessageServiceSpec extends BaseSpec with MongoSpecSupport with MockFactory {
+class SecureMessageServiceSpec extends BaseSpec with DefaultPlayMongoRepositorySupport[SecureCommsRequestModel] {
 
-  val mockMongo = injector.instanceOf[ReactiveMongoComponent]
-
-  val mockSecureMessageRepo: SecureMessageRepository = new SecureMessageRepository()(() => mongo())
-  lazy val mockSecureMessageService: SecureMessageService = new SecureMessageService(mockMongo) {
-    override lazy val repository: SecureMessageRepository = mockSecureMessageRepo
-  }
-
-  val testJson: JsValue = Json.obj(
-    "test" -> "test"
-  )
+  override lazy val repository = new SecureMessageRepository(mongoComponent)
+  lazy val service = new SecureMessageService(mongoComponent)
 
   "SecureMessageService" should {
 
     "insert a given document" in {
-      val result = await(mockSecureMessageService.insert(testJson))
-      result shouldBe true
-    }
-
-    "remove all documents from the collection" in {
-      val result = await(mockSecureMessageService.removeAll())
-      result shouldBe true
+      val result = await(service.insert(secureCommsModel))
+      result.wasAcknowledged() shouldBe true
     }
 
     "count all documents in the collection" in {
-      val result = await(mockSecureMessageService.count())
-      result shouldBe 0
+      val result = {
+        await(service.insert(secureCommsModel))
+        await(service.count())
+      }
+      result shouldBe 1
+    }
+
+    "remove all documents from the collection" in {
+      val result = {
+        await(service.insert(secureCommsModel))
+        await(service.removeAll())
+      }
+      result shouldBe successDeleteResult
     }
 
     "contain an SecureMessageRepository" in {
-      val service = new SecureMessageService(mockMongo)
-      service.repository.getClass shouldBe mockSecureMessageRepo.getClass
+      service.repository.getClass shouldBe repository.getClass
     }
   }
 }

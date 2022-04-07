@@ -16,22 +16,20 @@
 
 package repositories
 
-import play.api.libs.json.{Format, JsResult, JsSuccess, JsValue}
+import models.EmailRequestModel
+import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-
-class EmailRepository(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) extends PlayMongoRepository[JsValue](
-  mongoComponent = mongoComponent,
+@Singleton
+class EmailRepository(mongo: MongoComponent)
+                     (implicit ec: ExecutionContext,
+                      formats: Format[EmailRequestModel]) extends PlayMongoRepository[EmailRequestModel](
+  mongoComponent = mongo,
   collectionName = "email",
-  domainFormat   = EmailRepository.rawFormat,
-  indexes        = Seq()
+  domainFormat = formats,
+  indexes = Seq()
 )
-
-object EmailRepository {
-  val rawFormat: Format[JsValue] = new Format[JsValue] {
-    override def reads(json: JsValue): JsResult[JsValue] = JsSuccess(json)
-    override def writes(o: JsValue): JsValue = o
-  }
-}

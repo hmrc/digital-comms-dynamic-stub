@@ -16,25 +16,27 @@
 
 package services
 
-import models.EmailRequestModel
-import org.mongodb.scala.model.Filters.empty
-import repositories.EmailRepository
-import uk.gov.hmrc.mongo.MongoComponent
+import models.DynamicDataModel
+import org.mongodb.scala.model.Filters.{and, empty, equal}
 import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
+import repositories.DynamicStubRepository
+import uk.gov.hmrc.mongo.MongoComponent
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailService @Inject()(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
+class DynamicStubService @Inject()(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
 
-  private[services] lazy val repository: EmailRepository = new EmailRepository(mongoComponent)
+  private[services] lazy val repository: DynamicStubRepository = new DynamicStubRepository(mongoComponent)
 
-  def insert(data: EmailRequestModel): Future[InsertOneResult] =
+  def find(query: Seq[(String, String)]): Future[Seq[DynamicDataModel]] = {
+    val terms = query.map(q => equal(q._1, q._2))
+    repository.collection.find(and(terms:_*)).toFuture()
+  }
+
+  def insert(data: DynamicDataModel): Future[InsertOneResult] =
     repository.collection.insertOne(data).toFuture()
-
-  def count(): Future[Long] =
-    repository.collection.countDocuments().toFuture()
 
   def removeAll(): Future[DeleteResult] =
     repository.collection.deleteMany(empty()).toFuture()

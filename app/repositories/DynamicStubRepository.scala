@@ -20,9 +20,16 @@ import models.DynamicDataModel
 import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-
-class DynamicStubRepository(mongo: MongoComponent)(implicit ec: ExecutionContext,
-                            formats: Format[DynamicDataModel])
-  extends PlayMongoRepository[DynamicDataModel](mongo, "data", formats, Seq())
+@Singleton
+class DynamicStubRepository(mongo: MongoComponent)
+                           (implicit ec: ExecutionContext,
+                            formats: Format[DynamicDataModel]) extends PlayMongoRepository[DynamicDataModel](
+  mongoComponent = mongo,
+  collectionName = "data",
+  domainFormat = formats,
+  indexes = Seq()
+)

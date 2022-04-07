@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package repositories
+package models
 
-import base.BaseSpec
-import play.api.libs.json.{JsSuccess, Json}
-import uk.gov.hmrc.mongo.MongoSpecSupport
+import play.api.libs.json.{Json, OFormat}
 
-class EmailRepositorySpec extends BaseSpec with MongoSpecSupport {
+case class EmailRequestModel(to: Seq[String],
+                             templateId: String,
+                             parameters: Map[String, String],
+                             force: Boolean)
 
-  "EmailRepository" should {
-
-    val validJson = Json.obj("test " -> "test")
-
-    "format valid json to a JsSuccess" in {
-      val result = EmailRepository.rawFormat.reads(validJson)
-
-      result shouldBe JsSuccess(validJson)
-    }
-  }
+object EmailRequestModel {
+  implicit val formats: OFormat[EmailRequestModel] = Json.format[EmailRequestModel]
 }

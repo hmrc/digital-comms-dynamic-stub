@@ -16,24 +16,27 @@
 
 package services
 
-import org.mongodb.scala.result.InsertOneResult
-import javax.inject.Inject
-import play.api.libs.json.JsValue
+import models.SecureCommsRequestModel
+import models.SecureCommsServiceRequestModel.format
+import org.mongodb.scala.model.Filters.empty
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
 import repositories.SecureMessageRepository
 import uk.gov.hmrc.mongo.MongoComponent
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-
+@Singleton
 class SecureMessageService @Inject()(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
 
   private[services] lazy val repository: SecureMessageRepository = new SecureMessageRepository(mongoComponent)
 
-  def insert(data: JsValue)(implicit ec: ExecutionContext): Future[InsertOneResult] =
+  def insert(data: SecureCommsRequestModel): Future[InsertOneResult] =
     repository.collection.insertOne(data).toFuture()
 
-  def count()(implicit ec: ExecutionContext): Future[Long] =
+  def count(): Future[Long] =
     repository.collection.countDocuments().toFuture()
 
-  def removeAll()(implicit ec: ExecutionContext): Future[Void] =
-    repository.collection.drop().toFuture()
+  def removeAll(): Future[DeleteResult] =
+    repository.collection.deleteMany(empty()).toFuture()
 }

@@ -16,22 +16,20 @@
 
 package repositories
 
-import play.api.libs.json.{Format, JsResult, JsSuccess, JsValue}
+import models.SecureCommsRequestModel
+import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.MongoComponent
+
+import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
-
-class SecureMessageRepository(mongoComponent: MongoComponent)(implicit ec: ExecutionContext) extends PlayMongoRepository[JsValue](
-  mongoComponent = mongoComponent,
+@Singleton
+class SecureMessageRepository(mongo: MongoComponent)
+                             (implicit ec: ExecutionContext,
+                              formats: Format[SecureCommsRequestModel]) extends PlayMongoRepository[SecureCommsRequestModel](
+  mongoComponent = mongo,
   collectionName = "secure-message",
-  domainFormat   = SecureMessageRepository.rawFormat,
-  indexes        = Seq()
+  domainFormat = formats,
+  indexes = Seq()
 )
-
-object SecureMessageRepository {
-  val rawFormat: Format[JsValue] = new Format[JsValue] {
-    override def reads(json: JsValue): JsResult[JsValue] = JsSuccess(json)
-    override def writes(o: JsValue): JsValue = o
-  }
-}

@@ -36,7 +36,6 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
   "org.scalatestplus.play"  %% "scalatestplus-play"          % "5.0.0"                 % scope,
   "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc"             %% "reactivemongo-test"          % "5.0.0-play-28"         % scope,
   "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"     % "0.62.0"                % scope
 )
 
@@ -47,16 +46,10 @@ lazy val coverageSettings: Seq[Setting[_]] = {
     "<empty>",
     ".*Reverse.*",
     ".*Routes.*",
-    ".*standardError*.*",
-    ".*govuk_wrapper*.*",
-    ".*main_template*.*",
-    "uk.gov.hmrc.BuildInfo",
     "app.*",
     "prod.*",
     "config.*",
-    "testOnly.*",
-    ".*feedback*.*",
-    "partials.*"
+    "testOnly.*"
   )
 
   Seq(
@@ -94,11 +87,3 @@ lazy val microservice = Project(appName, file("."))
     testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
     parallelExecution in IntegrationTest := false
   )
-
-
-inThisBuild(
-  List(
-    semanticdbEnabled := true,
-    semanticdbVersion := scalafixSemanticdb.revision
-  )
-)

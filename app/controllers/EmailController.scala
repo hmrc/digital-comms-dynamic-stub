@@ -16,33 +16,38 @@
 
 package controllers
 
+import models.EmailRequestModel
+import play.api.libs.json.JsValue
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import services.EmailService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton()
-class EmailController @Inject()(emailService: EmailService)(implicit val ec: ExecutionContext,
-                                                            cc: ControllerComponents) extends BackendController(cc) {
+class EmailController @Inject()(emailService: EmailService)
+                               (implicit val ec: ExecutionContext,
+                                cc: ControllerComponents) extends BackendController(cc) {
 
-  def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
-    case body: AnyContentAsJson => emailService.insert(body.json) map {
-      case result if result.wasAcknowledged() => Accepted
-      case _ => InternalServerError
-    }
-    case _ => Future.successful(BadRequest)
-  }}
+  def insert(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    withJsonBody[EmailRequestModel](
+      model => emailService.insert(model).map {
+        case result if result.wasAcknowledged() => Accepted
+        case _ => InternalServerError
+      }
+    )
+  }
 
   def remove(): Action[AnyContent] = Action.async {
-    emailService.removeAll() map {
-      case Void  => Ok
+    emailService.removeAll().map {
+      case result if result.wasAcknowledged() => Ok
       case _ => InternalServerError
     }
   }
 
   def count(): Action[AnyContent] = Action.async {
-    emailService.count.map(x => Ok(x.toString))
+    emailService.count().map(x => Ok(x.toString))
   }
 }

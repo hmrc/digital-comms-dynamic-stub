@@ -17,30 +17,31 @@
 package mocks
 
 import base.BaseSpec
-import org.scalamock.handlers.{CallHandler1, CallHandler2}
+import models.EmailRequestModel
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
+import org.scalamock.handlers.{CallHandler0, CallHandler1}
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.JsValue
 import services.EmailService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait MockEmailService extends BaseSpec with MockFactory {
 
   lazy val mockEmailService: EmailService = mock[EmailService]
 
-  def mockInsert(data: JsValue)
-                (response: Future[Boolean]): CallHandler2[JsValue, ExecutionContext, Future[Boolean]] =
-    (mockEmailService.insert(_: JsValue)(_: ExecutionContext))
-      .expects(data, *)
-      .returning(response)
+  def mockInsert(data: EmailRequestModel)
+                (response: InsertOneResult): CallHandler1[EmailRequestModel, Future[InsertOneResult]] =
+    (mockEmailService.insert(_: EmailRequestModel))
+      .expects(data)
+      .returning(Future.successful(response))
 
-  def mockRemoveAll()(response: Future[Boolean]): CallHandler1[ExecutionContext, Future[Boolean]] =
-    (mockEmailService.removeAll()(_: ExecutionContext))
-      .expects(*)
-      .returning(response)
+  def mockRemoveAll(response: DeleteResult): CallHandler0[Future[DeleteResult]] =
+    (() => mockEmailService.removeAll())
+      .expects()
+      .returning(Future.successful(response))
 
-  def mockCount()(response: Future[Int]): CallHandler1[ExecutionContext, Future[Int]] =
-    (mockEmailService.count()(_: ExecutionContext))
-      .expects(*)
-      .returning(response)
+  def mockCount(response: Long): CallHandler0[Future[Long]] =
+    (() => mockEmailService.count())
+      .expects()
+      .returning(Future.successful(response))
 }
