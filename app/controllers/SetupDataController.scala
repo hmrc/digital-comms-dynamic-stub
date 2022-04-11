@@ -20,12 +20,12 @@ import javax.inject.Inject
 import models.DynamicDataModel
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
-import repositories.DynamicStubDataRepository
+import services.DynamicStubService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
+class SetupDataController @Inject()(dataRepository: DynamicStubService)(
                                     implicit val ec: ExecutionContext,
                                     cc: ControllerComponents) extends BackendController(cc) {
 
@@ -34,20 +34,20 @@ class SetupDataController @Inject()(dataRepository: DynamicStubDataRepository)(
       case "GET" | "POST" => addStubDataToDB(json)
       case x => Future.successful(BadRequest(s"The method: $x is currently unsupported"))
     }).recover {
-      case ex => InternalServerError("Unexpected exception returned when adding data to stub")
+      case ex => InternalServerError(s"Unexpected exception returned when adding data to stub. Exception:\n$ex")
     }
   }
 
   private def addStubDataToDB(json: DynamicDataModel): Future[Result] =
     dataRepository.insert(json).map {
-      case result if result.ok => Ok(s"The following JSON was added to the stub: \n\n${Json.toJson(json)}")
-      case _ => InternalServerError("Failed to add data to Stub.")
+      case result if result.wasAcknowledged() => Ok(s"The following JSON was added to the stub:\n${Json.toJson(json)}")
+      case _ => InternalServerError("Failed to add data to stub")
   }
 
   val removeAll: Action[AnyContent] = Action.async {
     dataRepository.removeAll().map {
-      case result if result.ok => Ok("Removed All Stubbed Data")
-      case _ => InternalServerError("Unexpected Error Clearing MongoDB.")
+      case result if result.wasAcknowledged() => Ok("Removed All Stubbed Data")
+      case _ => InternalServerError("Unexpected error clearing MongoDB")
     }
   }
 }

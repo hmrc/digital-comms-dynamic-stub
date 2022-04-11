@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import play.mvc.Http.Status
+
 import scala.concurrent.Future
 
 class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
@@ -96,7 +97,7 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
       lazy val request = FakeRequest()
       lazy val result = controller.removeAll()(request)
 
-      mockRemoveAll()(successWriteResult)
+      mockRemoveAll(successDeleteResult)
 
       status(result) shouldBe Status.OK
     }
@@ -105,7 +106,7 @@ class SetupDataControllerSpec extends BaseSpec with MockDynamicDataRepository {
       lazy val request = FakeRequest()
       lazy val result = controller.removeAll()(request)
 
-      mockRemoveAll()(errorWriteResult)
+      mockRemoveAll(errorDeleteResult)
 
       status(result) shouldBe Status.INTERNAL_SERVER_ERROR
     }

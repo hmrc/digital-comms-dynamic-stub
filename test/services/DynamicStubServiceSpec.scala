@@ -17,40 +17,42 @@
 package services
 
 import base.BaseSpec
-import models.EmailRequestModel
-import repositories.EmailRepository
+import models.DynamicDataModel
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
+import repositories.DynamicStubRepository
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-class EmailServiceSpec extends BaseSpec with DefaultPlayMongoRepositorySupport[EmailRequestModel] {
+class DynamicStubServiceSpec extends BaseSpec with DefaultPlayMongoRepositorySupport[DynamicDataModel] {
 
-  override lazy val repository = new EmailRepository(mongoComponent)
-  lazy val service = new EmailService(mongoComponent)
+  override lazy val repository = new DynamicStubRepository(mongoComponent)
+  lazy val service = new DynamicStubService(mongoComponent)
 
-  "EmailService" should {
+  val dynamicDataModel: DynamicDataModel = DynamicDataModel("id1", "get", 1, None)
+
+  "DynamicStubDataRepository" should {
 
     "insert a given document" in {
-      val result = await(service.insert(emailModel))
+      val result = await(service.insert(dynamicDataModel))
       result.wasAcknowledged() shouldBe true
     }
 
-    "count all documents in the collection" in {
+    "find matching documents given a query" in {
       val result = {
-        await(service.insert(emailModel))
-        await(service.count())
+        await(service.insert(dynamicDataModel))
+        await(service.find(Seq("_id" -> "id1")))
       }
-      result shouldBe 1
+      result shouldBe List(dynamicDataModel)
     }
 
     "remove all documents from the collection" in {
       val result = {
-        await(service.insert(emailModel))
+        await(service.insert(dynamicDataModel))
         await(service.removeAll())
       }
       result shouldBe successDeleteResult
     }
 
-    "contain an EmailRepository" in {
+    "contain a DynamicStubRepository" in {
       service.repository.getClass shouldBe repository.getClass
     }
   }

@@ -16,33 +16,38 @@
 
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import models.SecureCommsRequestModel
+import models.SecureCommsServiceRequestModel.format
+import play.api.libs.json.JsValue
 import play.api.mvc._
 import services.SecureMessageService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton()
-class SecureMessageController @Inject()(secureMessageService: SecureMessageService)(implicit val ec: ExecutionContext,
-                                                                                    cc: ControllerComponents) extends BackendController(cc) {
+class SecureMessageController @Inject()(secureMessageService: SecureMessageService)
+                                       (implicit val ec: ExecutionContext,
+                                        cc: ControllerComponents) extends BackendController(cc) {
 
-  def insert(): Action[AnyContent] = Action.async { implicit request => request.body match {
-    case body: AnyContentAsJson => secureMessageService.insert(body.json) map {
-      case true  => Created
-      case false => InternalServerError
-    }
-    case _ => Future.successful(BadRequest)
-  }}
+  def insert(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    withJsonBody[SecureCommsRequestModel](model =>
+      secureMessageService.insert(model) map {
+        case result if result.wasAcknowledged()  => Created
+        case _ => InternalServerError
+      }
+    )
+  }
 
   def remove(): Action[AnyContent] = Action.async {
-    secureMessageService.removeAll() map {
-      case true  => Ok
-      case false => InternalServerError
+    secureMessageService.removeAll().map {
+      case result if result.wasAcknowledged() => Ok
+      case _ => InternalServerError
     }
   }
 
   def count(): Action[AnyContent] = Action.async {
-    secureMessageService.count.map(x => Ok(x.toString))
+    secureMessageService.count().map(x => Ok(x.toString))
   }
 }

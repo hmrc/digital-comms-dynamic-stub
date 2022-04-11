@@ -18,53 +18,30 @@ package mocks
 
 import base.BaseSpec
 import models.DynamicDataModel
-import org.scalamock.handlers.{CallHandler1, CallHandler2}
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
+import org.scalamock.handlers.{CallHandler0, CallHandler1}
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.Json.JsValueWrapper
-import reactivemongo.api.commands.{UpdateWriteResult, WriteError, WriteResult}
-import repositories.DynamicStubDataRepository
+import services.DynamicStubService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait MockDynamicDataRepository extends BaseSpec with MockFactory {
 
-  val successWriteResult: UpdateWriteResult = UpdateWriteResult(
-    ok = true,
-    n = 1,
-    nModified = 1,
-    upserted = Seq(),
-    writeErrors = Seq(),
-    None,
-    None,
-    None
-  )
-  val errorWriteResult: UpdateWriteResult = UpdateWriteResult(
-    ok = false,
-    n = 1,
-    nModified = 1,
-    upserted = Seq(),
-    writeErrors = Seq(WriteError(1,1,"Error")),
-    None,
-    None,
-    None
-  )
-
-  lazy val mockDataRepository: DynamicStubDataRepository = mock[DynamicStubDataRepository]
+  lazy val mockDataRepository: DynamicStubService = mock[DynamicStubService]
 
   def mockAddEntry(document: DynamicDataModel)
-                  (response: Future[WriteResult]): CallHandler2[DynamicDataModel, ExecutionContext, Future[WriteResult]] =
-    (mockDataRepository.insert(_: DynamicDataModel)(_: ExecutionContext))
-      .expects(document, *)
+                  (response: Future[InsertOneResult]): CallHandler1[DynamicDataModel, Future[InsertOneResult]] =
+    (mockDataRepository.insert(_: DynamicDataModel))
+      .expects(document)
       .returning(response)
 
-  def mockRemoveAll()(response: WriteResult): CallHandler1[ExecutionContext, Future[WriteResult]] =
-    (mockDataRepository.removeAll()(_: ExecutionContext))
-      .expects(*)
+  def mockRemoveAll(response: DeleteResult): CallHandler0[Future[DeleteResult]] =
+    (() => mockDataRepository.removeAll())
+      .expects()
       .returning(Future.successful(response))
 
-  def mockFind(response: List[DynamicDataModel]): CallHandler2[(String, JsValueWrapper),
-                                                               ExecutionContext, Future[List[DynamicDataModel]]] =
-    (mockDataRepository.find(_: (String, JsValueWrapper))(_: ExecutionContext))
-      .expects(*,*)
+  def mockFind(response: List[DynamicDataModel]): CallHandler1[Seq[(String, String)], Future[Seq[DynamicDataModel]]] =
+    (mockDataRepository.find(_: Seq[(String, String)]))
+      .expects(*)
       .returning(Future.successful(response))
 }

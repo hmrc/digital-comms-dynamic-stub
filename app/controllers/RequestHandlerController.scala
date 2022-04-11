@@ -16,27 +16,28 @@
 
 package controllers
 
-import javax.inject.Inject
 import models.DynamicDataModel
 import play.api.mvc.{Action, AnyContent, ControllerComponents, Result}
-import repositories.DynamicStubDataRepository
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import play.api.libs.json.{JsValue, Json}
+import services.DynamicStubService
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-class RequestHandlerController @Inject()(dataRepository: DynamicStubDataRepository)(
+@Singleton
+class RequestHandlerController @Inject()(dataRepository: DynamicStubService)(
                                         implicit ec: ExecutionContext,
                                         cc: ControllerComponents) extends BackendController(cc) {
 
   def getRequestHandler(url: String): Action[AnyContent] = Action.async { implicit request =>
 
     val dataNotUsingQueryStringParameters =
-      dataRepository.find("_id" -> s"""${request.uri.takeWhile(_ != '?')}""", "method" -> "GET")
+      dataRepository.find(Seq("_id" -> s"""${request.uri.takeWhile(_ != '?')}""", "method" -> "GET"))
     val dataUsingQueryStringParameters =
-      dataRepository.find("_id" -> request.uri, "method" -> "GET")
+      dataRepository.find(Seq("_id" -> request.uri, "method" -> "GET"))
 
-    def getResult(data: List[DynamicDataModel]): Result = data match {
+    def getResult(data: Seq[DynamicDataModel]): Result = data match {
       case head :: _ if head.response.nonEmpty => Status(head.status)(head.response.get) //return status and body
       case head :: _ => Status(head.status) //Only return status, no body.
       case _ => NotFound(errorResponseBody(request.uri))
@@ -51,7 +52,7 @@ class RequestHandlerController @Inject()(dataRepository: DynamicStubDataReposito
   }
 
   def postRequestHandler(url: String): Action[AnyContent] = Action.async { implicit request =>
-    dataRepository.find("_id" -> s"""${request.uri.takeWhile(_ != '?')}""", "method" -> "POST").map {
+    dataRepository.find(Seq("_id" -> s"""${request.uri.takeWhile(_ != '?')}""", "method" -> "POST")).map {
       case head :: _ if head.response.nonEmpty => Status(head.status)(head.response.get) //return status and body
       case head :: _ => Status(head.status) //Only return status, no body.
       case _ => NotFound(errorResponseBody(request.uri))

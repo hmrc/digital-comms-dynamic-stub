@@ -17,30 +17,31 @@
 package mocks
 
 import base.BaseSpec
-import org.scalamock.handlers.{CallHandler1, CallHandler2}
+import models.SecureCommsRequestModel
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
+import org.scalamock.handlers.{CallHandler0, CallHandler1}
 import org.scalamock.scalatest.MockFactory
-import play.api.libs.json.JsValue
 import services.SecureMessageService
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait MockSecureMessageService extends BaseSpec with MockFactory {
 
   lazy val mockSecureMessageService: SecureMessageService = mock[SecureMessageService]
 
-  def mockInsert(data: JsValue)
-                (response: Future[Boolean]): CallHandler2[JsValue, ExecutionContext, Future[Boolean]] =
-    (mockSecureMessageService.insert(_: JsValue)(_: ExecutionContext))
-      .expects(data, *)
-      .returning(response)
+  def mockInsert(data: SecureCommsRequestModel)
+                (response: InsertOneResult): CallHandler1[SecureCommsRequestModel, Future[InsertOneResult]] =
+    (mockSecureMessageService.insert(_: SecureCommsRequestModel))
+      .expects(data)
+      .returning(Future.successful(response))
 
-  def mockRemoveAll()(response: Future[Boolean]): CallHandler1[ExecutionContext, Future[Boolean]] =
-    (mockSecureMessageService.removeAll()(_: ExecutionContext))
-      .expects(*)
-      .returning(response)
+  def mockRemoveAll(response: DeleteResult): CallHandler0[Future[DeleteResult]] =
+    (() => mockSecureMessageService.removeAll())
+      .expects()
+      .returning(Future.successful(response))
 
-  def mockCount()(response: Future[Int]): CallHandler1[ExecutionContext, Future[Int]] =
-    (mockSecureMessageService.count()(_: ExecutionContext))
-      .expects(*)
-      .returning(response)
+  def mockCount(response: Long): CallHandler0[Future[Long]] =
+    (() => mockSecureMessageService.count())
+      .expects()
+      .returning(Future.successful(response))
 }

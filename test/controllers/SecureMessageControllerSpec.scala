@@ -18,12 +18,11 @@ package controllers
 
 import base.BaseSpec
 import mocks.MockSecureMessageService
+import models.SecureCommsServiceRequestModel.format
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, defaultAwaitTimeout}
-
-import scala.concurrent.Future
+import play.api.test.Helpers.{defaultAwaitTimeout, status}
 
 class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService {
 
@@ -33,30 +32,29 @@ class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService
 
     "the request body is valid json" should {
 
-      val testJson = Json.obj("test" -> "test")
       val testInvalidJson = "invalid"
 
       s"return Status CREATED ($CREATED) if data successfully added to stub" in {
-        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
+        lazy val request = FakeRequest().withBody(Json.toJson(secureCommsModel)).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.insert()(request)
 
-        mockInsert(testJson)(Future.successful(true))
+        mockInsert(secureCommsModel)(successWriteResult)
         status(result) shouldBe CREATED
       }
 
       "return Status InternalServerError (500) if unable to add data to the stub" in {
-        lazy val request = FakeRequest().withJsonBody(testJson).withHeaders(("Content-Type", "application/json"))
+        lazy val request = FakeRequest().withBody(Json.toJson(secureCommsModel)).withHeaders(("Content-Type", "application/json"))
         lazy val result = controller.insert()(request)
 
-        mockInsert(testJson)(Future.successful(false))
+        mockInsert(secureCommsModel)(errorWriteResult)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
 
-      "return Status BadRequest (400) if request body is not json" in {
-        lazy val request = FakeRequest().withTextBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
+      "return Status UnsupportedMediaType 415 if request body is not json" in {
+        lazy val request = FakeRequest().withBody(testInvalidJson).withHeaders(("Content-Type", "text/plain"))
         lazy val result = controller.insert()(request)
 
-        status(result) shouldBe BAD_REQUEST
+        status(result) shouldBe UNSUPPORTED_MEDIA_TYPE
       }
     }
   }
@@ -66,16 +64,14 @@ class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService
     "return Status OK (200) on successful removal of all stubbed data" in {
       lazy val result = controller.remove()(request)
 
-      mockRemoveAll()(Future.successful(true))
-
+      mockRemoveAll(successDeleteResult)
       status(result) shouldBe OK
     }
 
     "return Status InternalServerError (500) on unsuccessful removal of all stubbed data" in {
       lazy val result = controller.remove()(request)
 
-      mockRemoveAll()(Future.successful(false))
-
+      mockRemoveAll(errorDeleteResult)
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
@@ -85,8 +81,7 @@ class SecureMessageControllerSpec extends BaseSpec with MockSecureMessageService
     "return Status OK (200) on successful count of all stubbed data" in {
       lazy val result = controller.count()(request)
 
-      mockCount()(Future.successful(1))
-
+      mockCount(1)
       status(result) shouldBe OK
     }
   }
