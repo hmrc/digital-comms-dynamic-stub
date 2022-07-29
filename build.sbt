@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-import play.core.PlayVersion
 import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.15"
+scalaVersion := "2.12.16"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"             %% "bootstrap-backend-play-28"          % "5.24.0",
-  "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"                 % "0.62.0"
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "6.4.0",
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.68.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "org.scalatest"           %% "scalatest"                   % "3.0.9"                 % scope,
-  "com.typesafe.play"       %% "play-test"                   % PlayVersion.current     % scope,
-  "org.pegdown"             %  "pegdown"                     % "1.6.0"                 % scope,
-  "org.scalatestplus.play"  %% "scalatestplus-play"          % "5.0.0"                 % scope,
-  "org.scalamock"           %% "scalamock-scalatest-support" % "3.6.0"                 % scope,
-  "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-28"     % "0.62.0"                % scope
+  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "6.4.0"  % scope,
+  "org.scalamock"     %% "scalamock-scalatest-support" % "3.6.0"  % scope,
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.68.0" % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
