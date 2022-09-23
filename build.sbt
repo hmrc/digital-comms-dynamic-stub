@@ -20,32 +20,25 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
-scalaVersion := "2.12.16"
-
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "6.4.0",
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.68.0"
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.3.0",
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.73.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "6.4.0"  % scope,
+  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.3.0"  % scope,
   "org.scalamock"     %% "scalamock-scalatest-support" % "3.6.0"  % scope,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.68.0" % scope
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.73.0" % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
   import scoverage.ScoverageKeys
 
   val excludedPackages = Seq(
-    "<empty>",
     ".*Reverse.*",
-    ".*Routes.*",
-    "app.*",
-    "prod.*",
-    "config.*",
-    "testOnly.*"
+    ".*Routes.*"
   )
 
   Seq(
@@ -68,6 +61,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(publishingSettings: _*)
   .settings(coverageSettings: _*)
   .settings(
+    scalaVersion := "2.12.16",
     PlayKeys.playDefaultPort := 9175,
     majorVersion := 0,
     libraryDependencies ++= appDependencies,
@@ -77,9 +71,9 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
   .settings(
-    Keys.fork in IntegrationTest := false,
-    unmanagedSourceDirectories in IntegrationTest := (baseDirectory in IntegrationTest) (base => Seq(base / "it")).value,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false
+    IntegrationTest / Keys.fork := false,
+    IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
+    IntegrationTest / testGrouping := oneForkedJvmPerTest((IntegrationTest / definedTests).value),
+    IntegrationTest / parallelExecution := false,
+    addTestReportOption(IntegrationTest, "int-test-reports")
   )
