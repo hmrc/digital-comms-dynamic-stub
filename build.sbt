@@ -23,14 +23,14 @@ val appName = "digital-comms-dynamic-stub"
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.3.0",
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.73.0"
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.12.0",
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.74.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.3.0"  % scope,
-  "org.scalamock"     %% "scalamock-scalatest-support" % "3.6.0"  % scope,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.73.0" % scope
+  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.12.0"  % scope,
+  "org.scalamock"     %% "scalamock" % "5.2.0"         % scope,
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.74.0" % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
@@ -61,7 +61,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(publishingSettings: _*)
   .settings(coverageSettings: _*)
   .settings(
-    scalaVersion := "2.12.16",
+    scalaVersion := "2.13.8",
     PlayKeys.playDefaultPort := 9175,
     majorVersion := 0,
     libraryDependencies ++= appDependencies,

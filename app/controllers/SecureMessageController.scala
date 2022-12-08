@@ -31,7 +31,7 @@ class SecureMessageController @Inject()(secureMessageService: SecureMessageServi
                                        (implicit val ec: ExecutionContext,
                                         cc: ControllerComponents) extends BackendController(cc) {
 
-  def insert(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def insert: Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[SecureCommsRequestModel](model =>
       secureMessageService.insert(model) map {
         case result if result.wasAcknowledged()  => Created
@@ -40,14 +40,14 @@ class SecureMessageController @Inject()(secureMessageService: SecureMessageServi
     )
   }
 
-  def remove(): Action[AnyContent] = Action.async {
+  def remove: Action[AnyContent] = Action.async {
     secureMessageService.removeAll().map {
       case result if result.wasAcknowledged() => Ok
       case _ => InternalServerError
     }
   }
 
-  def count(): Action[AnyContent] = Action.async {
+  def count: Action[AnyContent] = Action.async {
     secureMessageService.count().map(x => Ok(x.toString))
   }
 }
