@@ -31,7 +31,7 @@ class EmailController @Inject()(emailService: EmailService)
                                (implicit val ec: ExecutionContext,
                                 cc: ControllerComponents) extends BackendController(cc) {
 
-  def insert(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def insert: Action[JsValue] = Action.async(parse.json) { implicit request =>
     withJsonBody[EmailRequestModel](
       model => emailService.insert(model).map {
         case result if result.wasAcknowledged() => Accepted
@@ -40,14 +40,14 @@ class EmailController @Inject()(emailService: EmailService)
     )
   }
 
-  def remove(): Action[AnyContent] = Action.async {
+  def remove: Action[AnyContent] = Action.async {
     emailService.removeAll().map {
       case result if result.wasAcknowledged() => Ok
       case _ => InternalServerError
     }
   }
 
-  def count(): Action[AnyContent] = Action.async {
+  def count: Action[AnyContent] = Action.async {
     emailService.count().map(x => Ok(x.toString))
   }
 }
