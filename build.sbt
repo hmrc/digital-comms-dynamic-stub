@@ -16,21 +16,20 @@
 
 import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "digital-comms-dynamic-stub"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.14.0",
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "0.74.0"
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.15.0",
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % "1.1.0"
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.14.0"  % scope,
+  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.15.0"  % scope,
   "org.scalamock"     %% "scalamock" % "5.2.0"         % scope,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "0.74.0" % scope
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % "1.1.0" % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {

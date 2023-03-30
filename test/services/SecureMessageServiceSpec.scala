@@ -17,11 +17,11 @@
 package services
 
 import base.BaseSpec
-import models.SecureCommsServiceRequestModel.format
+import models.SecureCommsServiceRequestModel.formats
 import models._
 import repositories.SecureMessageRepository
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.mongo.test.{DefaultPlayMongoRepositorySupport}
+import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 class SecureMessageServiceSpec extends BaseSpec with DefaultPlayMongoRepositorySupport[SecureCommsRequestModel] {
 

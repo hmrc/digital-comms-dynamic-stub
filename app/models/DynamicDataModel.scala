@@ -16,7 +16,9 @@
 
 package models
 
-import play.api.libs.json.{JsValue, Json, OFormat}
+import play.api.libs.json.{Format, JsNull, JsObject, JsValue, Json, Writes}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import java.time.Instant
 
 case class DynamicDataModel(_id: String,
                             method: String,
@@ -24,5 +26,18 @@ case class DynamicDataModel(_id: String,
                             response: Option[JsValue])
 
 object DynamicDataModel {
-  implicit val formats: OFormat[DynamicDataModel] = Json.format[DynamicDataModel]
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  implicit val formats: Format[DynamicDataModel] = Format(
+    Json.reads[DynamicDataModel],
+    Writes[DynamicDataModel] { model =>
+      JsObject(Json.obj(
+        "_id" -> model._id,
+        "method" -> model.method,
+        "status" -> model.status,
+        "response" -> model.response,
+        "creationTimestamp" -> Instant.now()
+      ).fields.filterNot(_._2 == JsNull))
+    }
+  )
 }

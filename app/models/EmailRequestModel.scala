@@ -16,7 +16,9 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, JsNull, JsObject, Json, Writes}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+import java.time.Instant
 
 case class EmailRequestModel(to: Seq[String],
                              templateId: String,
@@ -24,5 +26,18 @@ case class EmailRequestModel(to: Seq[String],
                              force: Boolean)
 
 object EmailRequestModel {
-  implicit val formats: OFormat[EmailRequestModel] = Json.format[EmailRequestModel]
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  implicit val formats: Format[EmailRequestModel] = Format(
+    Json.reads[EmailRequestModel],
+    Writes[EmailRequestModel] { model =>
+      JsObject(Json.obj(
+        "to" -> model.to,
+        "templateId" -> model.templateId,
+        "parameters" -> model.parameters,
+        "force" -> model.force,
+        "creationTimestamp" -> Instant.now()
+      ).fields.filterNot(_._2 == JsNull))
+    }
+  )
 }

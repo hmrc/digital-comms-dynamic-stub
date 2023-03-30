@@ -17,7 +17,7 @@
 package controllers
 
 import models.SecureCommsRequestModel
-import models.SecureCommsServiceRequestModel.format
+import models.SecureCommsServiceRequestModel.formats
 import play.api.libs.json.JsValue
 import play.api.mvc._
 import services.SecureMessageService

@@ -16,11 +16,14 @@
 
 package repositories
 
+import common.Constants
 import models.EmailRequestModel
+import org.mongodb.scala.model.{IndexModel, IndexOptions, Indexes}
 import play.api.libs.json.Format
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import scala.concurrent.ExecutionContext
 
@@ -31,5 +34,9 @@ class EmailRepository(mongo: MongoComponent)
   mongoComponent = mongo,
   collectionName = "email",
   domainFormat = formats,
-  indexes = Seq()
+  indexes = Seq(IndexModel(
+    Indexes.ascending("creationTimestamp"),
+    IndexOptions().name("expiry").expireAfter(Constants.timeToLiveInSeconds, TimeUnit.SECONDS)
+  )),
+  replaceIndexes = true
 )

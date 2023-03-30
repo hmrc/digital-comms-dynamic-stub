@@ -16,7 +16,10 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, JsNull, JsObject, Json, OFormat, Writes}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 case class TaxIdentifierModel(name: String, value: String)
 
@@ -54,5 +57,19 @@ case class SecureCommsRequestModel(externalRef: ExternalRefModel,
                                    content: String)
 
 object SecureCommsServiceRequestModel {
-  implicit val format: OFormat[SecureCommsRequestModel] = Json.format[SecureCommsRequestModel]
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  implicit val formats: Format[SecureCommsRequestModel] = Format(
+    Json.reads[SecureCommsRequestModel],
+    Writes[SecureCommsRequestModel] { model =>
+      JsObject(Json.obj(
+        "externalRef" -> model.externalRef,
+        "recipient" -> model.recipient,
+        "messageType" -> model.messageType,
+        "subject" -> model.subject,
+        "content" -> model.content,
+        "creationTimestamp" -> Instant.now()
+      ).fields.filterNot(_._2 == JsNull))
+    }
+  )
 }
