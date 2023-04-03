@@ -18,7 +18,7 @@ package controllers
 
 import base.BaseSpec
 import mocks.MockSecureMessageService
-import models.SecureCommsServiceRequestModel.format
+import models.SecureCommsServiceRequestModel.formats
 import play.api.http.Status._
 import play.api.libs.json.Json
 import play.api.test.FakeRequest

@@ -17,7 +17,7 @@
 package services
 
 import models.SecureCommsRequestModel
-import models.SecureCommsServiceRequestModel.format
+import models.SecureCommsServiceRequestModel.formats
 import org.mongodb.scala.model.Filters.empty
 import org.mongodb.scala.result.{DeleteResult, InsertOneResult}
 import repositories.SecureMessageRepository
