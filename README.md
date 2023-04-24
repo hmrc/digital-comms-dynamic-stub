@@ -5,13 +5,13 @@
 
 ## Summary
 
-This stub service is used in acceptance testing of the digital comms solution involving [comms-queue-manager](https://github.com/hmrc/comms-queue-manager).
+This stub service is used in acceptance testing of the digital comms solution.
 
 Generally, when a dynamic stub is called with a url, the stub will check its mongo database for a record with a matching url and return the data it has associated with that url. In the case of this stub, the requests made to the stub will be for the following purposes:-
 - to trigger an API1 notification of change approved or rejected (to mimic ETMP/DES behaviour)
 - to get API2 details in order to construct an email and / or secure comm message (mimic response from ETMP/DES)
-- to post a request for sending an email (mimic response from [comms-email](https://github.com/hmrc/comms-email))
-- to post a request for sending a secure comm message (mimic response from [comms-secure-message](https://github.com/hmrc/comms-secure-message))
+- to post a request for sending an email
+- to post a request for sending a secure comm message
 
 ## Requirements
 
