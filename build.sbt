@@ -18,19 +18,20 @@ import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
 
 val appName = "digital-comms-dynamic-stub"
-val hmrcMongoVersion = "1.2.0"
+val hmrcMongoVersion = "1.5.0"
+val bootstrapPlayVersion = "8.1.0"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % "7.15.0",
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % bootstrapPlayVersion,
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % hmrcMongoVersion
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % "7.15.0"         % scope,
-  "org.scalamock"     %% "scalamock"                   % "5.2.0"          % scope,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % hmrcMongoVersion % scope
+  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % bootstrapPlayVersion  % scope,
+  "org.scalamock"     %% "scalamock"                   % "5.2.0"               % scope,
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % hmrcMongoVersion      % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
@@ -64,6 +65,7 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort := 9175,
     majorVersion := 0,
     libraryDependencies ++= appDependencies,
+    scalacOptions ++= Seq("-Wconf:cat=unused-imports&src=.*routes.*:s"),
     retrieveManaged := true,
     routesImport := Seq.empty,
     routesGenerator := InjectedRoutesGenerator
