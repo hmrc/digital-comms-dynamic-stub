@@ -19,7 +19,7 @@ package repositories
 import base.BaseSpec
 import common.Constants
 import models.DynamicDataModel
-import org.mongodb.scala.bson.{BsonInt64, BsonString}
+import org.mongodb.scala.bson.{BsonInt32, BsonString}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -37,7 +37,7 @@ class DynamicStubRepositorySpec extends BaseSpec with DefaultPlayMongoRepository
       val ttlIndex = indexes.find(_.get("name").contains(BsonString("expiry")))
 
       ttlIndex.get("key").toString shouldBe """{"creationTimestamp": 1}"""
-      ttlIndex.get("expireAfterSeconds") shouldBe BsonInt64(Constants.timeToLiveInSeconds)
+      ttlIndex.get("expireAfterSeconds") shouldBe BsonInt32(Constants.timeToLiveInSeconds)
     }
   }
 }
