@@ -18,20 +18,22 @@ import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
 
 val appName = "digital-comms-dynamic-stub"
-val hmrcMongoVersion = "1.5.0"
-val bootstrapPlayVersion = "8.1.0"
+val hmrcMongoVersion = "1.7.0"
+val bootstrapPlayVersion = "8.4.0"
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
 val compile = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-backend-play-28" % bootstrapPlayVersion,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"        % hmrcMongoVersion
+  "uk.gov.hmrc"       %% "bootstrap-backend-play-30" % bootstrapPlayVersion,
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"        % hmrcMongoVersion
 )
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
-  "uk.gov.hmrc"       %% "bootstrap-test-play-28"      % bootstrapPlayVersion  % scope,
+  "uk.gov.hmrc"       %% "bootstrap-test-play-30"      % bootstrapPlayVersion  % scope,
   "org.scalamock"     %% "scalamock"                   % "5.2.0"               % scope,
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-28"     % hmrcMongoVersion      % scope
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"     % hmrcMongoVersion      % scope
 )
 
 lazy val coverageSettings: Seq[Setting[_]] = {
@@ -61,9 +63,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(coverageSettings: _*)
   .settings(
-    scalaVersion := "2.13.8",
     PlayKeys.playDefaultPort := 9175,
-    majorVersion := 0,
     libraryDependencies ++= appDependencies,
     scalacOptions ++= Seq("-Wconf:cat=unused-imports&src=.*routes.*:s"),
     retrieveManaged := true,

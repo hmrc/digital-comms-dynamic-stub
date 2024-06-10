@@ -16,7 +16,7 @@
 
 package base
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import com.mongodb.client.result.{DeleteResult, InsertOneResult}
 import models.{EmailRequestModel, ExternalRefModel, NameModel, RecipientModel, SecureCommsRequestModel, TaxIdentifierModel}
 import org.mongodb.scala.bson.BsonObjectId
