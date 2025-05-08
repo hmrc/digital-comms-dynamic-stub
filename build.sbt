@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import sbt.Tests.{Group, SubProcess}
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, integrationTestSettings}
 
 val appName = "digital-comms-dynamic-stub"
-val hmrcMongoVersion = "1.7.0"
-val bootstrapPlayVersion = "8.4.0"
+val hmrcMongoVersion = "2.6.0"
+val bootstrapPlayVersion = "8.6.0"
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.16"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
@@ -36,7 +35,7 @@ def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"     % hmrcMongoVersion      % scope
 )
 
-lazy val coverageSettings: Seq[Setting[_]] = {
+lazy val coverageSettings: Seq[Setting[?]] = {
   import scoverage.ScoverageKeys
 
   val excludedPackages = Seq(
@@ -54,18 +53,18 @@ lazy val coverageSettings: Seq[Setting[_]] = {
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-  .settings(defaultSettings(): _*)
-  .settings(coverageSettings: _*)
+  .settings(defaultSettings() *)
+  .settings(coverageSettings *)
   .settings(
     PlayKeys.playDefaultPort := 9175,
     libraryDependencies ++= appDependencies,
-    scalacOptions ++= Seq("-Wconf:cat=unused-imports&src=.*routes.*:s"),
+    scalacOptions ++= Seq("-Wconf:cat=unused-imports&src=routes/.*:s", "-Wconf:cat=unused&src=routes/.*:s"),
     retrieveManaged := true,
     routesImport := Seq.empty,
     routesGenerator := InjectedRoutesGenerator
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(integrationTestSettings() *)
   .settings(
     IntegrationTest / Keys.fork := false,
     IntegrationTest / unmanagedSourceDirectories := (IntegrationTest / baseDirectory) (base => Seq(base / "it")).value,
