@@ -29,15 +29,18 @@ class EmailRepositorySpec extends BaseSpec with DefaultPlayMongoRepositorySuppor
 
   "The EmailRepository" should {
 
-    "have a TTL index on the creationTimestamp field, with an expiry time set by the Constants object" in {
-      val indexes = {
-        await(repository.ensureIndexes())
-        await(repository.collection.listIndexes().toFuture())
-      }
-      val ttlIndex = indexes.find(_.get("name").contains(BsonString("expiry")))
+"have a TTL index on the creationTimestamp field, with an expiry time set by the Constants object" in {
+  val indexes = {
+    await(repository.ensureIndexes())
+    await(repository.collection.listIndexes().toFuture())
+  }
+  val ttlIndex = indexes.find(_.get("name").contains(BsonString("expiry")))
 
-      ttlIndex.get("key").toString shouldBe """{"creationTimestamp": 1}"""
-      ttlIndex.get("expireAfterSeconds") shouldBe BsonInt32(Constants.timeToLiveInSeconds)
-    }
+  ttlIndex.get("key").toString shouldBe """{"creationTimestamp": 1}"""
+  
+  val expireAfterSeconds = ttlIndex.get("expireAfterSeconds").asNumber().intValue()
+  
+  expireAfterSeconds shouldBe Constants.timeToLiveInSeconds
+}
   }
 }

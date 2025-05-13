@@ -19,7 +19,7 @@ package repositories
 import base.BaseSpec
 import common.Constants
 import models.DynamicDataModel
-import org.mongodb.scala.bson.{BsonInt32, BsonString}
+import org.mongodb.scala.bson.{BsonNumber, BsonString}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -29,15 +29,21 @@ class DynamicStubRepositorySpec extends BaseSpec with DefaultPlayMongoRepository
 
   "The DynamicStubRepository" should {
 
-    "have a TTL index on the creationTimestamp field, with an expiry time set by the Constants object" in {
-      val indexes = {
-        await(repository.ensureIndexes())
-        await(repository.collection.listIndexes().toFuture())
-      }
-      val ttlIndex = indexes.find(_.get("name").contains(BsonString("expiry")))
+   "have a TTL index on the creationTimestamp field, with an expiry time set by the Constants object" in {
+  val indexes = {
+    await(repository.ensureIndexes())
+    await(repository.collection.listIndexes().toFuture())
+  }
+  val ttlIndex = indexes.find(_.get("name").contains(BsonString("expiry")))
 
-      ttlIndex.get("key").toString shouldBe """{"creationTimestamp": 1}"""
-      ttlIndex.get("expireAfterSeconds") shouldBe BsonInt32(Constants.timeToLiveInSeconds)
-    }
+  ttlIndex.get("key").toString shouldBe """{"creationTimestamp": 1}"""
+
+  val expireAfterSeconds = ttlIndex.get("expireAfterSeconds") match {
+    case number: BsonNumber => number.intValue()
+    case other => fail(s"Unexpected BSON type for expireAfterSeconds: ${other.getBsonType}")
+  }
+
+  expireAfterSeconds shouldBe Constants.timeToLiveInSeconds
+}
   }
 }
