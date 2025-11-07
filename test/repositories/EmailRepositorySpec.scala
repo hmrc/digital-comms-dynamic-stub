@@ -19,7 +19,7 @@ package repositories
 import base.BaseSpec
 import common.Constants
 import models.EmailRequestModel
-import org.mongodb.scala.bson.{BsonInt32, BsonString}
+import org.mongodb.scala.bson.BsonString
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
