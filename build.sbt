@@ -20,7 +20,7 @@ val appName = "digital-comms-dynamic-stub"
 val hmrcMongoVersion = "2.10.0"
 val bootstrapPlayVersion = "10.4.0"
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.17"
+ThisBuild / scalaVersion := "2.13.18"
 
 lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
@@ -31,7 +31,7 @@ val compile = Seq(
 
 def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
   "uk.gov.hmrc"       %% "bootstrap-test-play-30"      % bootstrapPlayVersion  % scope,
-  "org.scalamock"     %% "scalamock"                   % "7.5.1"               % scope,
+  "org.scalamock"     %% "scalamock"                   % "7.5.5"               % scope,
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30"     % hmrcMongoVersion      % scope
 )
 
